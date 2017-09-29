@@ -16,23 +16,25 @@ def rot13(s):
     c
     for c in s)
 
-def get_pow_output():
+def get_words():
   (raw, _) = subprocess.Popen(['pow', seed], stdout=subprocess.PIPE).communicate()
   print()
-  return raw.decode().strip()
-def camel_case_bang(s):
-  return ''.join(w[0].upper() + w[1:].lower() for w in s.split(' ')[:4]) + '!'
-def infer_index(xs):
+  return raw.decode().strip().split(' ')
+def infer_choice(xs):
   if len(xs) == 0:
     raise ValueError('no matches')
   elif len(xs) == 1:
     return 0
 
+  xs = list(sorted(xs))
   print('Choose:')
   for (i, x) in enumerate(xs):
     print('  {}. {}'.format(i, x))
 
-  return int(input('Your choice: '))
+  return xs[int(input('Your choice: '))]
+
+def camel_case(ws):
+  return ''.join(w[0].upper() + w[1:].lower() for w in ws)
 
 
 parser = argparse.ArgumentParser()
@@ -52,22 +54,20 @@ if __name__ == '__main__':
 
   query_pattern = '.*'.join(args.queries)
 
-  matches = [(k, v) for (k, v) in info.items() if re.match(query_pattern, k)]
+  matches = {k: v for (k, v) in info.items() if re.match(query_pattern, k)}
 
   try:
-    match_index = infer_index([k for (k, v) in matches])
+    k = infer_choice(matches.keys())
   except ValueError:
     print('no matches', file=sys.stderr)
     exit(1)
 
-  (k, v) = matches[match_index]
+  v = matches[k]
   print('Match:', k)
   if args.get_info:
     pprint.pprint(v)
   seed = v.get("seed", k)
-  pow_output = get_pow_output()
-  final = camel_case_bang(pow_output)
+  ws = get_words()
+  processor = eval(v['process']) if 'process' in v else (lambda ws: camel_case(ws[:4]) + '!')
+  final = processor(ws)
   subprocess.Popen(['xsel', '--input', '--clipboard'], stdin=subprocess.PIPE).communicate(final.encode())
-  if 'notes' in v:
-    print('Notes:')
-    pprint.pprint(v['notes'])
