@@ -1,0 +1,15 @@
+#!/bin/bash
+
+test -f ~/.pride-and-prejudice.txt || curl "https://web.archive.org/web/20080920082814/http://www.gutenberg.org/files/1342/1342.txt" > ~/.pride-and-prejudice.txt
+
+PNP_SHA256="$(shasum -a 256 < ~/.pride-and-prejudice.txt | sed 's/ .*//')"
+if [ "$PNP_SHA256" != '53c585e8d3df3fba73e2dcbfb51d1ca2aab0287384ec2a052435950907d9f6b8' ]; then
+    echo "Pride and Prejudice has unexpected checksum (expected 53c585e8..., got $PNP_SHA256)" >&@
+    return 1
+fi
+
+read -s -p "Seed: " SEED
+SEED="$SEED $*"
+echo
+export SEED
+env | sed -n -e 's/^SEED=//p' | tr -d '\n' | shasum -a 256 | cut -c 1-64 | hex-to-words ~/.pride-and-prejudice.txt

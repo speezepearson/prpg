@@ -1,0 +1,19 @@
+#!/usr/bin/python
+
+import sys
+import re
+import argparse
+
+def digits(n, base):
+  while n > 0:
+    yield n % base
+    n //= base
+
+parser = argparse.ArgumentParser()
+parser.add_argument('word_list_path')
+args = parser.parse_args()
+
+words = list(sorted(set(w for w in re.findall(r"[a-zA-Z]+", open(args.word_list_path).read().lower()) if 4 <= len(w) <= 6)))
+
+n = int(sys.stdin.read(), 16)
+print(' '.join(words[i] for i in digits(n, len(words))))
