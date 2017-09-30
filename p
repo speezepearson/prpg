@@ -21,12 +21,13 @@ def get_words():
   print()
   return raw.decode().strip().split(' ')
 def infer_choice(xs):
+  xs = list(sorted(xs))
+
   if len(xs) == 0:
     raise ValueError('no matches')
   elif len(xs) == 1:
-    return 0
+    return xs[0]
 
-  xs = list(sorted(xs))
   print('Choose:')
   for (i, x) in enumerate(xs):
     print('  {}. {}'.format(i, x))
