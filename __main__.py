@@ -122,4 +122,9 @@ if __name__ == '__main__':
   if args.main is None:
     parser.parse_args(['--help'])
   else:
-    args.main(args)
+    try:
+      args.main(args)
+    except KeyboardInterrupt:
+      exit(1)
+    except EOFError:
+      exit(0)
