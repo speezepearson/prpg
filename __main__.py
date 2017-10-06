@@ -21,7 +21,7 @@ def determine_query_result(salts, query):
 
 def raw_main(args):
   print_or_copy = (print if args.print else pow.copy_to_clipboard)
-  result = pow.core.string_to_gobbledygook(pow.get_seed(), [string.ascii_lowercase, string.ascii_uppercase, string.digits, '!'])
+  result = pow.string_to_gobbledygook(pow.get_seed(), [string.ascii_lowercase, string.ascii_uppercase, string.digits, '!'])
   print_or_copy(result)
 
 def info_main(args):

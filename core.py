@@ -1,27 +1,35 @@
+#!/usr/bin/python
+
+'''The canonical implementation of the `pow` pseudo-random gobbledygook generator.
+
+Reads a seed on standard input, and turns it into gobbledygook.
+
+Everything else in this package is a nice user interface around this script.
+'''
+
 import hashlib
+import argparse
 
-def choose(xs, seed):
-  return (xs[seed % len(xs)], seed // len(xs))
+CORRECT_HASH = '4ede6dd9545a96c99a50d4a14344a83b20da21adabc85b98912cb79e880c1776'
+this_source_code = open(__file__).read()
+assert hashlib.sha256(this_source_code.replace(CORRECT_HASH, '').encode('utf-8')).hexdigest() == CORRECT_HASH, 'for backwards-compatibility, this file should never change'
 
-def int_to_gobbledygook(n, required_charsets):
+parser = argparse.ArgumentParser()
+parser.add_argument('charsets', nargs='+')
+args = parser.parse_args()
 
-  all_valid_chars = ''.join(required_charsets)
+salted_seed = input()
+sha = hashlib.sha256(salted_seed.encode('utf-8')).hexdigest()
+n = int(sha, 16)
 
-  result = ''
-  for charset in required_charsets:
-    (c, n) = choose(charset, n)
-    result += c
+result = ''
+for charset in args.charsets:
+  result += charset[n % len(charset)]
+  n //= len(charset)
 
-  while n > 0:
-    (c, n) = choose(all_valid_chars, n)
-    result += c
+charset = ''.join(args.charsets)
+while n > 0:
+  result += charset[n % len(charset)]
+  n //= len(charset)
 
-  return result
-
-def string_to_gobbledygook(s, required_charsets):
-  sha = hashlib.sha256(s.encode()).hexdigest()
-  n = int(sha, 16)
-  return int_to_gobbledygook(n, required_charsets)
-
-assert choose('abcdefghijklmnopqrstuvwxyz', 25) == ('z', 0)
-assert choose('abcdefghijklmnopqrstuvwxyz', 7*26 + 4) == ('e', 7)
+print(result, end='')
