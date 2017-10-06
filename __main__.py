@@ -25,12 +25,12 @@ def raw_main(args):
   print_or_copy(result)
 
 def info_main(args):
-  salts = pow.load_salts(open(args.salts_file))
+  salts = pow.load_salts(args.salts_file)
   k = determine_query_result(salts.keys(), args.query)
   pprint.pprint(salts[k])
 
 def gob_main(args):
-  salts = pow.load_salts(open(args.salts_file))
+  salts = pow.load_salts(args.salts_file)
   print_or_copy = (print if args.print else pow.copy_to_clipboard)
   k = determine_query_result(salts.keys(), args.query)
   seed = pow.get_seed()
@@ -46,11 +46,17 @@ def gob_main(args):
       print_or_copy(result)
 
 def add_main(args):
-  salts = pow.load_salts(open(args.salts_file))
+  salts = pow.load_salts(args.salts_file)
   k = input('New key: ')
   salt = json.loads(input('New salt: '))
   salts[k] = salt
-  pow.dump_salts(open(args.salts_file, 'w'), salts)
+  pow.dump_salts(args.salts_file, salts)
+
+def init_main(args):
+  if os.path.exists(args.salts_file):
+    raise FileExistsError(args.salts_file)
+  else:
+    pow.dump_salts(args.salts_file, {})
 
 parser = argparse.ArgumentParser()
 parser.set_defaults(main=None)
@@ -72,10 +78,14 @@ gob_parser.add_argument('--print', action='store_true')
 gob_parser.add_argument('--persistent', action='store_true')
 gob_parser.add_argument('query')
 
-info_parser = subparsers.add_parser('info')
+info_parser = subparsers.add_parser('info', help='print out salt-info')
 info_parser.set_defaults(main=info_main)
 info_parser.add_argument('-f', '--salts-file', default=os.path.join(os.environ['HOME'], '.salts.json'))
 info_parser.add_argument('query')
+
+init_parser = subparsers.add_parser('init', help='create a new salt-fil')
+init_parser.set_defaults(main=init_main)
+init_parser.add_argument('-f', '--salts-file', default=os.path.join(os.environ['HOME'], '.salts.json'))
 
 
 
