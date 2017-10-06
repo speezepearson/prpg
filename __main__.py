@@ -65,6 +65,7 @@ def init_main(args):
 
 parser = argparse.ArgumentParser()
 parser.set_defaults(main=None)
+parser.add_argument('--no-self-test', action='store_false', dest='self_test', help='do not run self-tests at beginning')
 
 subparsers = parser.add_subparsers()
 
@@ -96,6 +97,14 @@ init_parser.add_argument('-f', '--salts-file', default=os.path.join(os.environ['
 
 if __name__ == '__main__':
   args = parser.parse_args()
+
+  if args.self_test:
+    test_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test.sh')
+    if subprocess.call(['bash', test_file]) != 0:
+      print(file=sys.stderr)
+      print('tests failed; refusing to run', file=sys.stderr)
+      exit(1)
+
 
   if args.main is None:
     parser.parse_args(['--help'])

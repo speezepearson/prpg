@@ -24,6 +24,10 @@ Color_Off=$'\e[0m'       # Text Reset
 #   'bA8!Kg7Np6mfvs2AFGbdWl6dxTvzdMxebD9NUQoCSxQ9r'
 #   >>>
 
+pow() {
+  python "$HERE" --no-self-test "$@"
+}
+
 error-if-different() {
   EXPECTED=$1
   ACTUAL=$2
@@ -42,7 +46,7 @@ error-if-different() {
 compare-raw() {
   SEED=$1
   EXPECTED=$2
-  ACTUAL="$(echo "$SEED" | python "$HERE" raw --print)"
+  ACTUAL="$(echo "$SEED" | pow raw --print)"
   error-if-different "$EXPECTED" "$ACTUAL" "raw gob of '$SEED' is wrong"
   return $?
 }
@@ -56,7 +60,7 @@ compare-salted-gob() {
   JSON=$2
   QUERY=$3
   EXPECTED=$4
-  ACTUAL="$(echo "$SEED" | python "$HERE" gob "$QUERY" --print -f <(echo "$JSON" | rot13))"
+  ACTUAL="$(echo "$SEED" | pow gob "$QUERY" --print -f <(echo "$JSON" | rot13))"
   error-if-different "$EXPECTED" "$ACTUAL" "gob of $QUERY in $JSON, with seed $SEED, is wrong"
   return $?
 }
@@ -65,11 +69,11 @@ if compare-salted-gob 'foo' '{"bar": {}}' 'b' 'wrong answer' >/dev/null 2>&1; th
   echo "${Red}THIS IS REALLY BAD!${Color_Off}" >&2
 fi
 
+compare-raw 'foo' 'wQ4!34PvMko0jV!jTLUVVCxIWkVT1THwWkmb5eY4htWid' || exit 1
+compare-raw 'foo bar' 'rO8!Kwi7K5uzEE21icnpewdKHVjGIf0bvUkXgod3WVR4r' || exit 1
 
-compare-raw 'foo' 'wQ4!34PvMko0jV!jTLUVVCxIWkVT1THwWkmb5eY4htWid'
-compare-raw 'foo bar' 'rO8!Kwi7K5uzEE21icnpewdKHVjGIf0bvUkXgod3WVR4r'
-
-compare-salted-gob 'foo' '{"bar": {}}' 'b' 'rO8!Kwi7K5uzEE21'
-compare-salted-gob 'foo' '{"bar": {"length": 8}}' 'b' 'rO8!Kwi7'
-compare-salted-gob 'foo' '{"bar": {"charset_specs": ["a-z", "A-Z", "0-9"]}}' 'b' 'rO8TxkGI23Zv9Itd'
-compare-salted-gob 'foo' '{"bar": {"postprocess": "lambda x: x[1:16]"}}' 'b' 'O8!Kwi7K5uzEE21'
+compare-salted-gob 'foo' '{"bar": {}}' 'b' 'rO8!Kwi7K5uzEE21' || exit 1
+compare-salted-gob 'foo' '{"bar": {"length": 8}}' 'b' 'rO8!Kwi7' || exit 1
+compare-salted-gob 'foo' '{"bar": {"charset_specs": ["a-z", "A-Z", "0-9"]}}' 'b' 'rO8TxkGI23Zv9Itd' || exit 1
+compare-salted-gob 'foo' '{"bar": {"postprocess": "lambda x: x[1:16]"}}' 'b' 'O8!Kwi7K5uzEE21' || exit 1
+compare-salted-gob 'foo' '{"bar": {"salt": "bar.com"}}' 'b' 'wH7!7dEwY0r!2wZb' || exit 1
