@@ -41,9 +41,14 @@ def gob_main(args):
     rot13_seed = pow.rot13(seed); del seed
     while True:
       query = input('Query: ')
-      k = determine_query_result(salts.keys(), args.query)
-      result = pow.seed_and_salt_to_gobbledygook(pow.rot13(rot13_seed), k, salts[k])
-      print_or_copy(result)
+
+      try:
+        k = determine_query_result(salts.keys(), query)
+      except ValueError:
+        print('no matches')
+      else:
+        result = pow.seed_and_salt_to_gobbledygook(pow.rot13(rot13_seed), k, salts[k])
+        print_or_copy(result)
 
 def add_main(args):
   salts = pow.load_salts(args.salts_file)
