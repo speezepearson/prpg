@@ -27,4 +27,4 @@ def dump_salts(f, salts):
     f.write(payload)
   else:
     with open(f, 'w') as true_f:
-      f.write(payload)
+      true_f.write(payload)
