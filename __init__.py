@@ -6,12 +6,7 @@ from .charspecs import chars_matching_charspec
 from .clipboard import copy_to_clipboard
 from .getseed import get_seed
 from .rot13 import rot13
-
-def string_to_gobbledygook(s, charsets):
-  p = subprocess.Popen(['python', '-m', 'pow.core']+list(charsets),
-                       stdin=subprocess.PIPE,
-                       stdout=subprocess.PIPE)
-  return p.communicate(s.encode('utf-8'))[0].decode()
+from .core import string_to_gobbledygook
 
 def seed_and_salt_to_gobbledygook(seed, salt_name, info):
   desired_length = info.get('length', 16)

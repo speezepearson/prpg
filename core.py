@@ -2,7 +2,7 @@
 
 '''The canonical implementation of the `pow` pseudo-random gobbledygook generator.
 
-Reads a seed on standard input, and turns it into gobbledygook.
+As a script, it reads a seed on standard input, and turns it into gobbledygook.
 
 Everything else in this package is a nice user interface around this script.
 '''
@@ -10,26 +10,35 @@ Everything else in this package is a nice user interface around this script.
 import hashlib
 import argparse
 
-CORRECT_HASH = '4ede6dd9545a96c99a50d4a14344a83b20da21adabc85b98912cb79e880c1776'
-this_source_code = open(__file__).read()
-assert hashlib.sha256(this_source_code.replace(CORRECT_HASH, '').encode('utf-8')).hexdigest() == CORRECT_HASH, 'for backwards-compatibility, this file should never change'
+def string_to_gobbledygook(s, charsets):
+  sha = hashlib.sha256(s.encode('utf-8')).hexdigest()
+  n = int(sha, 16)
 
-parser = argparse.ArgumentParser()
-parser.add_argument('charsets', nargs='+')
-args = parser.parse_args()
+  result = ''
+  for charset in charsets:
+    result += charset[n % len(charset)]
+    n //= len(charset)
 
-salted_seed = input()
-sha = hashlib.sha256(salted_seed.encode('utf-8')).hexdigest()
-n = int(sha, 16)
+  charset = ''.join(charsets)
+  while n > 0:
+    result += charset[n % len(charset)]
+    n //= len(charset)
 
-result = ''
-for charset in args.charsets:
-  result += charset[n % len(charset)]
-  n //= len(charset)
+  return result
 
-charset = ''.join(args.charsets)
-while n > 0:
-  result += charset[n % len(charset)]
-  n //= len(charset)
+# THESE ASSERTIONS SHOULD NEVER CHANGE:
+# They are correct BY DEFINITION.
+# Any implementation that produces different answers is necessarily wrong,
+#  because adopting it would break backwards-compatibility.
+_sample_charsets = ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '0123456789', '!']
+assert string_to_gobbledygook('foo', _sample_charsets) == 'wQ4!34PvMko0jV!jTLUVVCxIWkVT1THwWkmb5eY4htWid'
+assert string_to_gobbledygook('foo bar', _sample_charsets) == 'rO8!Kwi7K5uzEE21icnpewdKHVjGIf0bvUkXgod3WVR4r'
 
-print(result, end='')
+if __name__ == '__main__':
+  parser = argparse.ArgumentParser()
+  parser.add_argument('charsets', nargs='+')
+  args = parser.parse_args()
+
+  s = input()
+
+  print(string_to_gobbledygook(s), end='')
