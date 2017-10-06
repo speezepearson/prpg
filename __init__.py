@@ -7,11 +7,12 @@ from .clipboard import copy_to_clipboard
 from .getseed import get_seed
 from .rot13 import rot13
 
-def seed_and_salt_to_gobbledygook(seed, salt, info):
+def seed_and_salt_to_gobbledygook(seed, salt_name, info):
   desired_length = info.get('length', 16)
   charset_specs = info.get('charset_specs', ['a-z', 'A-Z', '0-9', '!'])
   charsets = [chars_matching_charspec(spec) for spec in charset_specs]
   postprocess = eval(info['postprocess']) if 'postprocess' in info else (lambda gob: gob[:desired_length])
+  salt = info.get('salt', salt_name)
   return postprocess(string_to_gobbledygook(seed + ' ' + salt, charsets))
 
 
