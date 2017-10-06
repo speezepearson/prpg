@@ -63,6 +63,19 @@ def init_main(args):
   else:
     pow.dump_salts(args.salts_file, {})
 
+
+def _add_salts_file_argument(parser):
+  parser.add_argument(
+    '-f', '--salts-file',
+    default=os.path.join(os.environ['HOME'], '.salts.json'),
+    help='ROT13ed JSON file containing information about various applications (default ~/.salts.json)')
+def _add_print_argument(parser):
+  parser.add_argument(
+    '-p', '--print', action='store_true',
+    help='print output instead of copying to clipboard')
+def _add_query_argument(parser):
+  parser.add_argument('query', help='regular expression matching beginning of desired salt')
+
 parser = argparse.ArgumentParser()
 parser.set_defaults(main=None)
 parser.add_argument('--no-self-test', action='store_false', dest='self_test', help='do not run self-tests at beginning')
@@ -71,27 +84,27 @@ subparsers = parser.add_subparsers()
 
 raw_parser = subparsers.add_parser('raw', help='just generate gobbledygook for a given string')
 raw_parser.set_defaults(main=raw_main)
-raw_parser.add_argument('-p', '--print', action='store_true')
+_add_print_argument(raw_parser)
 
 add_parser = subparsers.add_parser('add', help='add a new salt')
 add_parser.set_defaults(main=add_main)
-add_parser.add_argument('-f', '--salts-file', default=os.path.join(os.environ['HOME'], '.salts.json'))
+_add_salts_file_argument(add_parser)
 
 gob_parser = subparsers.add_parser('gob', help='compute gobbledygook using salt-file')
 gob_parser.set_defaults(main=gob_main)
-gob_parser.add_argument('-f', '--salts-file', default=os.path.join(os.environ['HOME'], '.salts.json'))
-gob_parser.add_argument('--print', action='store_true')
-gob_parser.add_argument('--persistent', action='store_true')
-gob_parser.add_argument('query')
+_add_salts_file_argument(gob_parser)
+_add_print_argument(gob_parser)
+_add_query_argument(gob_parser)
+gob_parser.add_argument('--persistent', action='store_true', help='continue running, rememberin seed and waiting for more queries')
 
 info_parser = subparsers.add_parser('info', help='print out salt-info')
 info_parser.set_defaults(main=info_main)
-info_parser.add_argument('-f', '--salts-file', default=os.path.join(os.environ['HOME'], '.salts.json'))
-info_parser.add_argument('query')
+_add_salts_file_argument(info_parser)
+_add_query_argument(info_parser)
 
 init_parser = subparsers.add_parser('init', help='create a new salt-fil')
 init_parser.set_defaults(main=init_main)
-init_parser.add_argument('-f', '--salts-file', default=os.path.join(os.environ['HOME'], '.salts.json'))
+_add_salts_file_argument(init_parser)
 
 
 
