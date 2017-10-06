@@ -1,0 +1,44 @@
+#!/usr/bin/python3
+
+import argparse
+import sys
+import math
+import re
+import itertools
+import string
+
+def chars_matching_charspec(spec):
+  return ''.join(chr(i) for i in range(256) if re.match('['+spec+']', chr(i)))
+
+assert chars_matching_charspec('a-z') == 'abcdefghijklmnopqrstuvwxyz'
+assert chars_matching_charspec('0-9') == '0123456789'
+assert chars_matching_charspec('!#$') == '!#$'
+
+
+def choose(xs, seed):
+  return (xs[seed % len(xs)], seed // len(xs))
+
+assert choose(chars_matching_charspec('a-z'), 25) == ('z', 0)
+assert choose(chars_matching_charspec('a-z'), 7*26 + 4) == ('e', 7)
+
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('required_charsets', nargs='*', type=chars_matching_charspec, default=[string.ascii_lowercase, string.ascii_uppercase, string.digits, '!'])
+args = parser.parse_args()
+
+required_charsets = args.required_charsets
+all_valid_chars = ''.join(required_charsets)
+
+n = int(sys.stdin.read(), 16)
+
+result = ''
+for charset in required_charsets:
+  (c, n) = choose(charset, n)
+  result += c
+
+while n > 0:
+  (c, n) = choose(all_valid_chars, n)
+  result += c
+
+print(result, end='')

@@ -7,9 +7,8 @@ import os
 import subprocess
 import re
 import sys
-import os
 
-HERE = os.path.dirname(__file__)
+HERE = os.path.realpath(os.path.dirname(__file__))
 
 def rot13(s):
   return ''.join(
@@ -18,12 +17,10 @@ def rot13(s):
     c
     for c in s)
 
-def get_gobbledygook(salt, charset_specs):
-  command = [os.path.join(HERE, 'pow'), salt] + list(charset_specs)
-  (raw, _) = subprocess.Popen(command, stdout=subprocess.PIPE).communicate()
+def get_words():
+  (raw, _) = subprocess.Popen([os.path.join(HERE, 'pow'), seed], stdout=subprocess.PIPE).communicate()
   print()
-  return raw.decode().strip()
-
+  return raw.decode().strip().split(' ')
 def infer_choice(xs):
   xs = list(sorted(xs))
 
@@ -38,6 +35,9 @@ def infer_choice(xs):
 
   return xs[int(input('Your choice: '))]
 
+def camel_case(ws):
+  return ''.join(w[0].upper() + w[1:].lower() for w in ws)
+
 class UnknownPlatformError(Exception):
   pass
 def copy_to_clipboard(s):
@@ -51,6 +51,7 @@ def copy_to_clipboard(s):
     open('/dev/clipboard', 'w').write(s.encode())
   else:
     raise UnknownPlatformError(sys.platform)
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--salts-file', default=os.path.join(os.environ['HOME'], '.salts.json'))
@@ -81,11 +82,11 @@ if __name__ == '__main__':
   print('Match:', k)
   if args.get_info:
     pprint.pprint(v)
-  salt = v.get("salt", k)
-  charset_specs = v.get('charset_specs', [])
-  ws = get_gobbledygook(salt, charset_specs)
-  processor = eval(v['postprocess']) if 'postprocess' in v else (lambda gob: gob[:16])
+  seed = v.get("seed", k)
+  ws = get_words()
+  processor = eval(v['process']) if 'process' in v else (lambda ws: camel_case(ws[:4]) + '!')
   final = processor(ws)
+
 
   try:
     copy_to_clipboard(final)
