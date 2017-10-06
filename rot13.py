@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import sys
 
 def rot13(s):
@@ -9,4 +7,5 @@ def rot13(s):
     c
     for c in s)
 
-sys.stdout.write(rot13(sys.stdin.read()))
+if __name__ == '__main__':
+  sys.stdout.write(rot13(sys.stdin.read()))
