@@ -112,10 +112,11 @@ if __name__ == '__main__':
   args = parser.parse_args()
 
   if args.self_test:
-    test_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test.sh')
-    if subprocess.call(['bash', test_file]) != 0:
-      print(file=sys.stderr)
-      print('tests failed; refusing to run', file=sys.stderr)
+    p = subprocess.Popen(['python', '-m', 'pow.test'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (out, err) = p.communicate()
+    if p.returncode != 0:
+      print(err.decode('utf-8'))
+      print('\nSELF-TESTS FAILED -- refusing to continue\n', file=sys.stderr)
       exit(1)
 
 
