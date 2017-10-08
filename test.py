@@ -13,7 +13,7 @@ def call_gob(salts, args, seed):
     f.file.flush()
 
     command = ['python', '-m', 'pow', '--no-self-test',
-               'gob', '-f', f.name, '--print'] + args
+               'gobble', '-f', f.name, '--print'] + args
     p = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     return p.communicate((seed+'\n').encode('utf-8'))[0].decode().strip()
 

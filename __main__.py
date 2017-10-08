@@ -29,7 +29,7 @@ def info_main(args):
   k = determine_query_result(salts.keys(), args.query)
   pprint.pprint(salts[k])
 
-def gob_main(args):
+def gobble_main(args):
   salts = pow.load_salts(args.salts_file)
   print_or_copy = (print if args.print else pow.copy_to_clipboard)
   k = determine_query_result(salts.keys(), args.query)
@@ -40,6 +40,7 @@ def gob_main(args):
   if args.persistent:
     rot13_seed = pow.rot13(seed); del seed
     while True:
+      print()
       query = input('Query: ')
 
       try:
@@ -67,8 +68,8 @@ def init_main(args):
 def _add_salts_file_argument(parser):
   parser.add_argument(
     '-f', '--salts-file',
-    default=os.path.join(os.environ['HOME'], '.salts.json'),
-    help='ROT13ed JSON file containing information about various applications (default ~/.salts.json)')
+    default=os.path.join(os.environ['HOME'], '.pow-suffixes.json'),
+    help='ROT13ed JSON file containing information about various applications (default ~/.pow-suffixes.json)')
 def _add_print_argument(parser):
   parser.add_argument(
     '-p', '--print', action='store_true',
@@ -90,12 +91,12 @@ add_parser = subparsers.add_parser('add', help='add a new salt')
 add_parser.set_defaults(main=add_main)
 _add_salts_file_argument(add_parser)
 
-gob_parser = subparsers.add_parser('gob', help='compute gobbledygook using salt-file')
-gob_parser.set_defaults(main=gob_main)
-_add_salts_file_argument(gob_parser)
-_add_print_argument(gob_parser)
-_add_query_argument(gob_parser)
-gob_parser.add_argument('--persistent', action='store_true', help='continue running, rememberin seed and waiting for more queries')
+gobble_parser = subparsers.add_parser('gobble', help='compute gobbledygook using salt-file')
+gobble_parser.set_defaults(main=gobble_main)
+_add_salts_file_argument(gobble_parser)
+_add_print_argument(gobble_parser)
+_add_query_argument(gobble_parser)
+gobble_parser.add_argument('--persistent', action='store_true', help='continue running, rememberin seed and waiting for more queries')
 
 info_parser = subparsers.add_parser('info', help='print out salt-info')
 info_parser.set_defaults(main=info_main)
@@ -126,6 +127,8 @@ if __name__ == '__main__':
     try:
       args.main(args)
     except KeyboardInterrupt:
+      print('Keyboard interrupt caught; exiting')
       exit(1)
     except EOFError:
+      print('EOF caught; exiting')
       exit(0)
