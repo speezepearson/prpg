@@ -38,7 +38,7 @@ Creating new salt-file in '/home/spencer/.pow-salts.json'
 ~ $ # compute your password
 ~ $ pow ex
 Chosen salt: 'example.com:username'
-Master:
+Master: ********
 Copied password for 'example.com:username' to clipboard.
 ~ $
 ```
@@ -52,11 +52,11 @@ Some sites have dumb password requirements. Pow's default charsets are `['a-z', 
 ~ $
 ~ $ pow we --print
 Chosen salt: 'we-disallow-punctuation.com:speeze'
-Master:
+Master: ********
 dIfO89ZhvH07qbG3
 ~ $ pow stu --print
 Chosen salt: 'stupid-short-max-password-length.com:spencer'
-Master:
+Master: ********
 mu8AaBgRzD2!
 ~ $
 ```
