@@ -167,8 +167,8 @@ Hand-Worked Example
 - Suppose the MAC is `000...000864c6` (implausibly small, for the sake of example). Interpreted as a hex number, this equals 550086. Let's express this using the charsets `['a-z', '0-9']`.
 - The corresponding base is `(...)(a-z0-9)(a-z)(0-9)`.
 - 550086 mod 10 =  6 (quotient 55008); `'0123456789'[6]  = '6'`
--  55008 mod 26 = 18 (quotient  2115); `'abcd...xyz'[18] = 's'`
--   2115 mod 36 = 27 (quotient    58); `'a...z0...9'[27] = '1'`
--     58 mod 36 = 22 (quotient     1); `'a...z0...9'[22] = 'w'`
--      1 mod 36 =  1 (quotient     0); `'a...z0...9]'[1] = 'b'`
+- 55008 mod 26 = 18 (quotient  2115); `'abcd...xyz'[18] = 's'`
+- 2115 mod 36 = 27 (quotient 58); `'a...z0...9'[27] = '1'`
+- 58 mod 36 = 22 (quotient 1); `'a...z0...9'[22] = 'w'`
+- 1 mod 36 =  1 (quotient 0); `'a...z0...9]'[1] = 'b'`
 - We've reached 0. We're done. The result is 'bw1s6'.
