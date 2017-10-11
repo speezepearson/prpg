@@ -1,12 +1,12 @@
-A simple password manager.
+A very simple, very safe password manager.
 
 This package views a password as a digital signature: in a sense, you use your master password to sign the string "example.com" (or whatever you like), to get a string that fulfills the site's password requirements.
 
 Reasons to use this scheme:
 
 - You only have to remember one password.
-- Your passwords are not stored anywhere, not even encrypted. It is impossible __even in principle__ for somebody to steal them out of this password manager, unless they have your master password (in which case you're obviously hosed) or crack HMAC-SHA256 (in which case we all are).
-- The algorithm is simple enough that you could re-implement it yourself (if you're fairly computer-and-crypto-savvy; if not, hopefully one of your friends is). You don't need to trust me. You are not reliant on me. There is no danger of your password manager one day seizing up with some inscrutable error message and leaving you completely in the lurch.
+- Your passwords are not stored anywhere, not even encrypted. It is impossible __even in principle__ for somebody to steal them out of this password manager, unless they have your master password (in which case you're obviously hosed) or they crack HMAC-SHA256 (in which case we all are).
+- The algorithm is simple enough that you could re-implement it yourself (if you're fairly computer-and-crypto-savvy; if not, hopefully one of your friends is). You don't need to trust me. You are not reliant on me. If you lose access to this package, or stop trusting it, or something, you can re-implement the scheme on your own in under ten minutes and recover all your passwords.
 
 
 Example Usage
