@@ -120,16 +120,16 @@ def master_and_salt_to_password(master: str, salt: str, charsets) -> str:
 
 ### Background: Mixed-Radix Systems
 
-tldr: expressing a number "in base (...)(abcde)(fgh)(ijkl)" means the last digit is in base 4, where i=0, j=1, k=2, l=3; the next digit is in base 3, where f=0, g=1, h=2; and all other digits are in base 5, where a=0, ..., e=4. So in that base, "ecbfk" represents the number (4*300 + 2*60 + 1*12 + 0*4 + 3 = 1335).
+tldr: expressing a number "in base `(...)(abcde)(fgh)(ijkl)`" means the last digit is in base 4, where i=0, j=1, k=2, l=3; the next digit is in base 3, where f=0, g=1, h=2; and all other digits are in base 5, where a=0, ..., e=4. So in that base, "ecbfk" represents the number `4*300 + 2*60 + 1*12 + 0*4 + 3 = 1335`.
 
 Recall that on a microwave, "1:23" means there are 83 seconds left, because the middle digit only goes up to 5.
 
-So, we can say that "123" is "83 expressed in base (...)(0-9)(0-5)(0-9)." The possible characters we can put in the rightmost place are ["0", "1", ..., "9"]; for the second-rightmost, ["0", "1", ..., "5"]; for the third-rightmost and all others, 0-9 again.
+So, we can say that "123" is "83 expressed in base `(...)(0-9)(0-5)(0-9)`." The possible characters we can put in the rightmost place are ["0", "1", ..., "9"]; for the second-rightmost, ["0", "1", ..., "5"]; for the third-rightmost and all others, 0-9 again.
 
 To express 83 in base (...)(0-9)(0-5)(0-9):
 
 - We first find the rightmost digit: there are 10 possibilities, so we take [83 mod 10 = 3] and that's the last digit.
-- To compute the rest of the digits, we take the quotient (i.e. floor(83/10)) and express it in base (...)(0-9)(0-5) (which we got by dropping the rightmost place of the old base). The quotient is 8.
+- To compute the rest of the digits, we take the quotient (i.e. floor(83/10) - 8) and express it in base `(...)(0-9)(0-5)` (which we got by dropping the rightmost place of the old base).
 - [8 mod 6 = 2], so the next digit is 2; quotient 1.
 - [1 mod 10 = 1], so the next digit is 1; quotient 0.
 - We've reached 0, so we're done. The final answer is "123", as expected.
@@ -145,7 +145,7 @@ Inputs:
 
 The core algorithm here is a three-step process.
 
-1. Use PBKDF2-HMAC-SHA256 to convert the master password, salted with the purpose, with 10^5 iterations, into a key.
+1. Use PBKDF2-HMAC-SHA256 to convert the master password, salted with the purpose, with a million iterations, into a key.
 2. Use that key to sign the empty string, using HMAC-SHA256, to obtain a 64-character hex string.
 3. Interpret that as a (gigantic) hexadecimal number, and write it in a particular mixed-radix system (described below) derived from the given charsets. The result is a string that contains at least one character from each charset.
 
@@ -160,7 +160,7 @@ Hand-Worked Example
 - Get the MAC (not by hand):
 
     ```python
-    key = pbkdf2_hmac(password=master_password, salt="github.com:speezepearson", iterations=10**5, hash_function=sha256)
+    key = pbkdf2_hmac(password=master_password, salt="github.com:speezepearson", iterations=10**6, hash_function=sha256)
     mac = hmac_sha256(key=key, msg="").hexdigest()
     ```
 
