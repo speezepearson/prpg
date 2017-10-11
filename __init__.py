@@ -4,7 +4,7 @@ import subprocess
 from .choose import infer_choice
 from .charspecs import chars_matching_charspec
 from .clipboard import copy_to_clipboard
-from .getseed import get_seed
+from .getseed import get_seed, get_mangled_seed
 from .rot13 import rot13
 from .core import string_to_gobbledygook
 
