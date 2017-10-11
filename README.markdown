@@ -15,19 +15,21 @@ Example Usage
 Basic, standalone usage:
 
 ```bash
-~ $ python -m pow.core --salt 'example.com:username' --charsets 'a-z A-Z 0-9 !@$'
+~ $ python -m pow compute --salt 'example.com:username' --charsets a-z A-Z 0-9 '!'
 Master: ********
 Copied password for 'example.com:username' to clipboard.
+~ $
 ```
 
 But it's a hassle to type all that every time. Pow can maintain a list of salts that you can easily fuzzy-search by prefix:
 
 ```bash
 ~ $ alias addsalt='python -m pow salts add'
-~ $ alias pow='python -m pow compute'
+~ $ alias pow='python -m pow recall'
 ~ $
 ~ $ # set up a new salt, once
 ~ $ addsalt 'example.com:username'
+Creating new salt-file in '/home/spencer/.pow-salts.json'
 ~ $ rot13 < ~/.pow-salts.json
 {
   "example.com:username": {}
@@ -35,9 +37,10 @@ But it's a hassle to type all that every time. Pow can maintain a list of salts 
 ~ $
 ~ $ # compute your password
 ~ $ pow ex
-Chose salt: example.com:username
-Master: ********
+Chosen salt: 'example.com:username'
+Master:
 Copied password for 'example.com:username' to clipboard.
+~ $
 ```
 
 (The salt-file is ROT13-encrypted by default, as a weak protection against somebody grepping your computer for bank-related words.)
@@ -46,6 +49,16 @@ Some sites have dumb password requirements. Pow's default charsets are `['a-z', 
 ```bash
 ~ $ addsalt 'we-disallow-punctuation.com:speeze' --json '{"charsets": ["a-z", "A-Z", "0-9"]}'
 ~ $ addsalt 'stupid-short-max-password-length.com:spencer' --json '{"postprocess": "lambda pw: pw[-12:]"}'
+~ $
+~ $ pow we --print
+Chosen salt: 'we-disallow-punctuation.com:speeze'
+Master:
+dIfO89ZhvH07qbG3
+~ $ pow stu --print
+Chosen salt: 'stupid-short-max-password-length.com:spencer'
+Master:
+mu8AaBgRzD2!
+~ $
 ```
 You can also just store random not-very-sensitive information you want to associate with the salt:
 

@@ -1,4 +1,4 @@
-from . import add_mangle_master_argument, add_print_argument
+from . import add_mangle_master_argument, add_print_argument, print_or_copy_and_notify
 from .. import getseed
 from ..core import master_and_salt_to_password
 from ..charsets import chars_matching_charspec
@@ -10,7 +10,7 @@ def main(args):
 
   charsets = [chars_matching_charspec(c) for c in args.charsets]
 
-  print_or_copy(master_and_salt_to_password(master, args.salt, charsets))
+  print_or_copy_and_notify(master_and_salt_to_password(master, args.salt, charsets), should_print=args.print, message='Copied password for {!r} to clipboard.'.format(args.salt))
 
 
 def prepare_parser(parser):

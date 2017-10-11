@@ -2,6 +2,7 @@
 
 import argparse
 import os
+from ..clipboard import copy_to_clipboard
 
 def add_salt_file_argument(parser):
   parser.add_argument(
@@ -19,6 +20,14 @@ def add_print_argument(parser):
 
 def add_query_argument(parser):
   parser.add_argument('query', help='regular expression matching beginning of desired salt')
+
+
+def print_or_copy_and_notify(s: str, should_print: bool, message:str = ''):
+  if should_print:
+    print(s)
+  else:
+    copy_to_clipboard(s)
+    print(message)
 
 
 

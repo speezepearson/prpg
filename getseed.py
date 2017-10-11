@@ -4,7 +4,7 @@ import string
 import random
 
 def get_seed():
-  result = subprocess.Popen(['/bin/bash', '-c', 'read -s -p "Seed: " SEED && export SEED && env | sed -n -e "s/^SEED=//p"'], stdout=subprocess.PIPE).communicate()[0].decode().strip()
+  result = subprocess.Popen(['/bin/bash', '-c', 'read -s -p "Master: " SEED && export SEED && env | sed -n -e "s/^SEED=//p"'], stdout=subprocess.PIPE).communicate()[0].decode().strip()
   if sys.stdout.isatty():
     print()
   return result
@@ -15,7 +15,7 @@ def get_mangled_seed():
     rng.seed(f.read(64))
   charset = ''.join([string.ascii_lowercase, string.ascii_uppercase, string.digits, string.punctuation])
 
-  print('Use these lookup tables to translate/enter your password, one character at a time; enter nothing when you are done')
+  print('Use these lookup tables to translate/enter your master password, one character at a time; enter nothing when you are done')
 
   result = ''
   while True:
