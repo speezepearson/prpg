@@ -63,13 +63,10 @@ mu8AaBgRzD2!
 You can also just store random not-very-sensitive information you want to associate with the salt:
 
 ```bash
-$ addsalt 'blub.com:mylogin' --json '{"email address": "nobody@invalid.com", "birthday": "1970-01-01"'
-$ python -m pow info bl
-Chose: blub.com:mylogin
-{
-  "email address": "nobody@invalid.com",
-  "birthday": "1970-01-01"
-}
+~ $ addsalt 'blub.com:mylogin' --json '{"email address": "nobody@invalid.com", "birthday": "1970-01-01"}'
+~ $ python -m pow salts get bl
+{'birthday': '1970-01-01', 'email address': 'nobody@invalid.com'}
+
 ```
 
 
