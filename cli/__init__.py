@@ -1,20 +1,46 @@
 #!/usr/bin/python3
 
 import argparse
-import pow
+import os
 
-parser = argparse.ArgumentParser()
-pow.cli.prepare_parser(parser)
-args = parser.parse_args()
+def add_salt_file_argument(parser):
+  parser.add_argument(
+    '-f', '--salt-file',
+    default=os.path.join(os.environ['HOME'], '.pow-salts.json'),
+    help='ROT13ed JSON file containing information about various applications (default ~/.pow-salts.json)')
 
-if hasattr(args, 'main'):
-  try:
-    args.main(args)
-  except KeyboardInterrupt:
-    print('Keyboard interrupt caught; exiting')
-    exit(1)
-else:
-  parser.parse_args(['--help'])
+def add_mangle_master_argument(parser):
+  parser.add_argument('--mangle-master', action='store_true', help='enter master password in a laborious, char-by-char-mangled way if you are worried about keyloggers')
+
+def add_print_argument(parser):
+  parser.add_argument(
+    '--print', action='store_true',
+    help='print output instead of copying to clipboard')
+
+def add_query_argument(parser):
+  parser.add_argument('query', help='regular expression matching beginning of desired salt')
+
+
+
+
+from . import compute
+from . import salts
+from . import recall
+
+
+
+def prepare_parser(parser):
+  subparsers = parser.add_subparsers()
+
+  compute_parser = subparsers.add_parser('compute', help='just compute a password')
+  compute.prepare_parser(compute_parser)
+
+  salts_parser = subparsers.add_parser('salts', help='view/edit a salt-file')
+  salts.prepare_parser(salts_parser)
+
+  recall_parser = subparsers.add_parser('recall', help='quickly recall a password using your salt-file')
+  recall.prepare_parser(recall_parser)
+
 #
 # import pprint
 # import json
@@ -28,7 +54,6 @@ else:
 # import string
 #
 # import pow
-#
 #
 # def raw_main(args):
 #   print_or_copy = (print if args.print else pow.copy_to_clipboard)
@@ -85,8 +110,6 @@ else:
 #   parser.add_argument(
 #     '-p', '--print', action='store_true',
 #     help='print output instead of copying to clipboard')
-# def _add_query_argument(parser):
-#   parser.add_argument('query', help='regular expression matching beginning of desired salt')
 #
 # parser = argparse.ArgumentParser()
 # parser.set_defaults(main=None)

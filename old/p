@@ -63,7 +63,7 @@ parser.add_argument('queries', nargs='+')
 if __name__ == '__main__':
   args = parser.parse_args()
 
-  salts_json = open(args.salts_file).read()
+  salts_json = open(args.salt_file).read()
   if args.rot13:
     salts_json = rot13(salts_json)
   info = json.loads(salts_json)
