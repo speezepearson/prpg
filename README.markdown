@@ -126,7 +126,7 @@ Recall that on a microwave, "1:23" means there are 83 seconds left, because the 
 
 So, we can say that "123" is "83 expressed in base `(...)(0-9)(0-5)(0-9)`." The possible characters we can put in the rightmost place are ["0", "1", ..., "9"]; for the second-rightmost, ["0", "1", ..., "5"]; for the third-rightmost and all others, 0-9 again.
 
-To express 83 in base (...)(0-9)(0-5)(0-9):
+To express 83 in base `(...)(0-9)(0-5)(0-9)`:
 
 - We first find the rightmost digit: there are 10 possibilities, so we take [83 mod 10 = 3] and that's the last digit.
 - To compute the rest of the digits, we take the quotient (i.e. floor(83/10) - 8) and express it in base `(...)(0-9)(0-5)` (which we got by dropping the rightmost place of the old base).
