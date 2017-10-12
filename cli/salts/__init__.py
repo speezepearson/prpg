@@ -1,4 +1,4 @@
-from .. import add_salt_file_argument
+from ..common_args import add_salt_file_argument
 from . import get
 from . import add
 from . import update

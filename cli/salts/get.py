@@ -1,6 +1,6 @@
 import json
 import pprint
-from .. import add_query_argument
+from ..common_args import add_query_argument
 from ...saltfiles import load_salts, disambiguate, fuzzy_search
 
 def main(args):
