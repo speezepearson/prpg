@@ -12,16 +12,16 @@ def expect_compute_result(options, password, expected):
   p.expect(pexpect.EOF)
 
 def test_basic():
-  expect_compute_result('--salt bar', password='foo', expected='JdS3dpz4li4rjD7!')
+  expect_compute_result('bar', password='foo', expected='JdS3dpz4li4rjD7!')
 
 def test_respects_postprocessing():
-  expect_compute_result('--salt bar --charsets a-z 0-9 --postprocess "lambda s: s.upper()[-8:]"', password='foo', expected='IE8TWTD7')
+  expect_compute_result('bar --charsets a-z 0-9 --postprocess "lambda s: s.upper()[-8:]"', password='foo', expected='IE8TWTD7')
 
 def test_respects_charsets():
-  expect_compute_result('--salt bar --charsets a-z 0-9', password='foo', expected='tsij6nvsie8twtd7')
+  expect_compute_result('bar --charsets a-z 0-9', password='foo', expected='tsij6nvsie8twtd7')
 
 def test_respects_mangling():
-  p = spawn_prpg('compute --print --mangle-master --salt bar')
+  p = spawn_prpg('compute --print --mangle-master bar')
   import sys; p.logfile = sys.stdout
 
   for char in 'foo':

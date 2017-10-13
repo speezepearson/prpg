@@ -17,7 +17,7 @@ def main(args):
 def prepare_parser(parser):
   add_mangle_master_argument(parser)
   add_print_argument(parser)
-  parser.add_argument('--salt', required=True)
+  parser.add_argument('salt')
   parser.add_argument('--charsets', nargs='+')
   parser.add_argument('--postprocess')
   parser.set_defaults(main=main)

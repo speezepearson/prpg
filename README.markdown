@@ -12,10 +12,12 @@ Reasons to use this scheme:
 Example Usage
 -------------
 
+(First, install, with `pip install prpg`.)
+
 Basic, standalone usage:
 
 ```bash
-~ $ python -m prpg compute --salt 'example.com:username' --charsets a-z A-Z 0-9 '!'
+~ $ prpg compute 'example.com:username' --charsets a-z A-Z 0-9 '!'
 Master: ********
 Copied password for 'example.com:username' to clipboard.
 ~ $
@@ -24,8 +26,8 @@ Copied password for 'example.com:username' to clipboard.
 But it's a hassle to type all that every time. PRPG can maintain a list of salts that you can easily fuzzy-search by prefix:
 
 ```bash
-~ $ alias addsalt='python -m prpg salts add'
-~ $ alias prpg='python -m prpg recall'
+~ $ alias addsalt='prpg salts add'
+~ $ alias pw='prpg recall'
 ~ $
 ~ $ # set up a new salt, once
 ~ $ addsalt 'example.com:username'
@@ -36,7 +38,7 @@ Creating new salt-file in '/home/spencer/.prpg-salts.json'
 }
 ~ $
 ~ $ # compute your password
-~ $ prpg ex
+~ $ pw ex
 Chosen salt: 'example.com:username'
 Master: ********
 Copied password for 'example.com:username' to clipboard.
@@ -64,7 +66,7 @@ You can also just store random not-very-sensitive information you want to associ
 
 ```bash
 ~ $ addsalt 'blub.com:mylogin' --json '{"email address": "nobody@invalid.com", "birthday": "1970-01-01"}'
-~ $ python -m prpg salts get bl
+~ $ prpg salts get bl
 {'birthday': '1970-01-01', 'email address': 'nobody@invalid.com'}
 
 ```
