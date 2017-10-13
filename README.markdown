@@ -6,6 +6,7 @@ Reasons to use this scheme:
 
 - As with other password managers, you only have to remember one password.
 - Unlike other password managers, your passwords are not stored anywhere, not even encrypted. It is impossible __even in principle__ for somebody to steal them out of this password manager, unless they have your master password (in which case you're obviously hosed) or they crack SHA256 and PBKDF2 (in which case we all are).
+- Kinda like other password managers, you can easily get your passwords on a foreign computer. Just `pip install prpg && prpg compute example.com:username`. (Well... as with other password managers, typing your master password into a foreign computer is a terrible idea. But you may be interested in the `--mangle-master` command-line option, which, at the cost of some tedious manual work, lets you enter your master password in a way that ensures it can't be recovered from a screenscraper/keylogger (though both together could recover it).)
 - Unlike other password managers, the algorithm is simple enough that you could re-implement it yourself (if you're fairly computer-and-crypto-savvy; if not, hopefully one of your friends is). You don't need to trust me. You are not reliant on me. If you lose access to this package, or stop trusting it, or something, you can re-implement the scheme on your own in under ten minutes and recover all your passwords.
 
 Reasons to not use this scheme:
@@ -56,6 +57,8 @@ Copied password for 'example.com:username' to clipboard.
 ```
 
 (The salt-file is ROT13-encrypted by default, as a weak protection against somebody grepping your computer for bank-related words. Yes, I _know_ that security through obscurity is frowned upon, but-- hey, it kinda works if you _stay_ obscure. Which I expect this package to do.)
+
+(Also, there's nothing special about the format `sitename.com:myusername`! The salts can be anything you want.)
 
 Each salt has a JSON object associated with it, which you can view using `prpg salts get SALTNAME`. You can store arbitrary random insensitive information in this object:
 
