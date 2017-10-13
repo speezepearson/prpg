@@ -2,11 +2,11 @@ import itertools
 import sys
 
 from . import print_or_copy_and_notify
+from .askpass import askpass
 from .common_args import (
   add_mangle_master_argument,
   add_salt_file_argument,
   add_print_argument)
-from .. import getseed
 from ..saltfiles import (
   load_salts,
   disambiguate,
@@ -22,7 +22,7 @@ def main(args):
 
   # HYPERPARANOIA: store the master ROT13ed in case somebody
   # snoops through our process memory or something crazy like that.
-  rot13_master = rot13(getseed.get_mangled_seed() if args.mangle_master else getseed.get_seed())
+  rot13_master = rot13(askpass(mangle=args.mangle_master))
 
   while True:
     query = input('Query: ')

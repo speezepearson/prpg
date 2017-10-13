@@ -16,3 +16,8 @@ def add_print_argument(parser):
 
 def add_query_argument(parser):
   parser.add_argument('query', help='regular expression matching beginning of desired salt')
+
+def add_confirm_argument(parser):
+  parser.add_argument(
+    '--confirm', action='store_true',
+    help='ask for master password twice to ensure you type it right')

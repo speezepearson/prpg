@@ -20,9 +20,31 @@ def test_respects_postprocessing():
 def test_respects_charsets():
   expect_compute_result('bar --charsets a-z 0-9', password='foo', expected='tsij6nvsie8twtd7')
 
+def test_respects_confirmation():
+  p = spawn_prpg('compute --print --confirm bar')
+  import sys; p.logfile=sys.stdout
+  p.expect(r'Master: ', timeout=1)
+  p.sendline('foo')
+  p.expect(r'Confirm: ', timeout=1)
+  p.sendline('foo')
+  p.expect('\nJdS3dpz4li4rjD7!\r?\n', timeout=3)
+  p.expect(pexpect.EOF)
+
+  p = spawn_prpg('compute --print --confirm bar')
+  p.expect(r'Master: ', timeout=1)
+  p.sendline('foo')
+  p.expect(r'Confirm: ', timeout=1)
+  p.sendline('WRONG')
+  p.expect(r'Passwords do not match. Try again.', timeout=1)
+  p.expect(r'Master: ', timeout=1)
+  p.sendline('foo')
+  p.expect(r'Confirm: ', timeout=1)
+  p.sendline('foo')
+  p.expect('\nJdS3dpz4li4rjD7!\r?\n', timeout=3)
+  p.expect(pexpect.EOF)
+
 def test_respects_mangling():
   p = spawn_prpg('compute --print --mangle-master bar')
-  import sys; p.logfile = sys.stdout
 
   for char in 'foo':
     p.expect(r' +(abc[^\n]*)\r?\n', timeout=1)
