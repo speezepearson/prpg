@@ -1,12 +1,12 @@
 A very simple, very safe password manager.
 
-This package views a password as a digital signature: in a sense, you use your master password to sign the string "example.com" (or whatever you like), to get a string that fulfills the site's password requirements.
+This package views a password as a sort of digital signature: in a sense, you use your master password to sign the string "example.com" (or whatever you like), resulting in a string that fulfills the site's password requirements.
 
 Reasons to use this scheme:
 
-- You only have to remember one password.
-- Your passwords are not stored anywhere, not even encrypted. It is impossible __even in principle__ for somebody to steal them out of this password manager, unless they have your master password (in which case you're obviously hosed) or they crack SHA256 and PBKDF2 (in which case we all are).
-- The algorithm is simple enough that you could re-implement it yourself (if you're fairly computer-and-crypto-savvy; if not, hopefully one of your friends is). You don't need to trust me. You are not reliant on me. If you lose access to this package, or stop trusting it, or something, you can re-implement the scheme on your own in under ten minutes and recover all your passwords.
+- As with other password managers, you only have to remember one password.
+- Unlike other password managers, your passwords are not stored anywhere, not even encrypted. It is impossible __even in principle__ for somebody to steal them out of this password manager, unless they have your master password (in which case you're obviously hosed) or they crack SHA256 and PBKDF2 (in which case we all are).
+- Unlike other password managers, the algorithm is simple enough that you could re-implement it yourself (if you're fairly computer-and-crypto-savvy; if not, hopefully one of your friends is). You don't need to trust me. You are not reliant on me. If you lose access to this package, or stop trusting it, or something, you can re-implement the scheme on your own in under ten minutes and recover all your passwords.
 
 
 Example Usage
@@ -110,15 +110,15 @@ The Algorithm
 
 Read this section if you want to be able to re-implement this module in times of need. One of my design goals has been to make the algorithm as memorable as possible, while staying cryptographically respectable and suitable for most/all password purposes.
 
-tldr: using the most natural algorithm for each step: turn your master password into a key; hash the key; interpret that hash as a number; and express it in the base defined by the required character sets (by default `['a-z', 'A-Z', '0-9', '!']`), and truncate that to a good password-length, starting from the entropy-denser end.
+tldr: interpret sha256(pbkdf2_hmac_sha256(master, salt, iterations=10**6)) as a huge hexadecimal number; express that number in the most natural numeral system defined by the required character sets; and truncate that to 16 characters.
 
-The most natural...
+Details:
 
-- ...__hash algorithm__ is SHA256;
-- ...__key derivation algorithm__ is PBKDF2, with a million iterations (and using HMAC-SHA256 as a PRF, naturally);
-- ...__hash-to-number conversion algorithm__ is to interpret the hex-digest as a hexadecimal number;
-- ...__base corresponding to a bunch of charsets__ is where the last digit is drawn from the last charset, the second-to-last digit from the second-to-last charset, etc., until you run out of charsets; further digits are drawn from the union of all charsets;
-- ...__password length__ is 16. (The right-hand end is the entropy-denser one; careful thought will reveal that the most significant digit is not entirely random.)
+The most natural numeral system corresponding to a bunch of charsets is a mixed-radix system where the last digit is drawn from the last charset, the second-to-last digit from the second-to-last charset, etc., until you run out of charsets; further digits are drawn from the union of all charsets. The default character sets are `['a-z', 'A-Z', '0-9', '!']`. (My mnemonic is "the four major classes of character, ordered by how often I use them; punctuation is represented by `!` alone, because I'm excited about passwords.")
+
+(You might think that it's more natural to say that the _first_ digit should come from the _first_ charset, etc., but that's provably bad: careful thought will reveal that the _first_ digit, i.e. the _most significant_ one, won't be completely random.)
+
+The truncation starts from the right-hand end of the number, because that's the end that's guaranteed to have characters from all the required character sets.
 
 
 ### As Code
