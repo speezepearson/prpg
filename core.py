@@ -6,7 +6,6 @@ This algorithm (and the password requirements) is all you need in order to recom
 '''
 
 import hashlib
-import hmac
 from typing import Sequence
 
 def number_to_password(n: int, charsets: Sequence[str]) -> str:
@@ -28,6 +27,6 @@ def master_and_salt_to_password(master: str, salt: str, charsets) -> str:
           password=master.encode('utf-8'),
           salt=salt.encode('utf-8'),
           iterations=10**6)
-  mac = hmac.new(key=key, msg=b'', digestmod=hashlib.sha256)
-  n = int(mac.hexdigest(), 16)
+  sha = hashlib.sha256(key).hexdigest()
+  n = int(sha, 16)
   return number_to_password(n, charsets)

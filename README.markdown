@@ -77,13 +77,13 @@ The Algorithm
 
 Read this section if you want to be able to re-implement this module in times of need. One of my design goals has been to make the algorithm as memorable as possible, while staying cryptographically respectable and suitable for most/all password purposes.
 
-tldr: using the most natural algorithm for each step: turn your master password into a key; use the key to sign the empty string; interpret that signature as a number; and express it in the base defined by the required character sets (by default `['a-z', 'A-Z', '0-9', '!']`), and truncate that to a good password-length, starting from the entropy-denser end.
+tldr: using the most natural algorithm for each step: turn your master password into a key; hash the key; interpret that hash as a number; and express it in the base defined by the required character sets (by default `['a-z', 'A-Z', '0-9', '!']`), and truncate that to a good password-length, starting from the entropy-denser end.
 
 The most natural...
 
-- ...__signature algorithm__ is HMAC-SHA256;
+- ...__hash algorithm__ is SHA256;
 - ...__key derivation algorithm__ is PBKDF2, with a million iterations (and using HMAC-SHA256 as a PRF, naturally);
-- ...__signature-to-number algorithm__ is to interpret the hex-digest as a hexadecimal number;
+- ...__hash-to-number conversion algorithm__ is to interpret the hex-digest as a hexadecimal number;
 - ...__base corresponding to a bunch of charsets__ is where the last digit is drawn from the last charset, the second-to-last digit from the second-to-last charset, etc., until you run out of charsets; further digits are drawn from the union of all charsets;
 - ...__password length__ is 16. (The right-hand end is the entropy-denser one; careful thought will reveal that the most significant digit is not entirely random.)
 
@@ -146,7 +146,7 @@ Inputs:
 The core algorithm here is a three-step process.
 
 1. Use PBKDF2-HMAC-SHA256 to convert the master password, salted with the purpose, with a million iterations, into a key.
-2. Use that key to sign the empty string, using HMAC-SHA256, to obtain a 64-character hex string.
+2. Hash that key, using HMAC-SHA256, to obtain a 64-character hex string.
 3. Interpret that as a (gigantic) hexadecimal number, and write it in a particular mixed-radix system (described below) derived from the given charsets. The result is a string that contains at least one character from each charset.
 
 If the required charsets are `['a-z', 'A-Z', '0-9', '!']` (Pow's default), we define the corresponding numeral system to be `(...)(a-zA-Z0-9!)(a-z)(A-Z)(0-9)(!)`
