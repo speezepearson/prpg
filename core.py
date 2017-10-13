@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-'''The core of `pow`'s password generator.
+'''The core of PRPG's algorithm.
 
-This algorithm (and the password requirements) is all you need in order to recompute a password. The rest of this package is just a nice UI to this module.
+This algorithm (and the salt, and your master password) is all you need in order to recompute a password. The rest of this package is just a nice UI to this module.
 '''
 
 import hashlib
@@ -21,7 +21,7 @@ def number_to_password(n: int, charsets: Sequence[str]) -> str:
 
   return result
 
-def master_and_salt_to_password(master: str, salt: str, charsets) -> str:
+def master_and_salt_to_password(master: str, salt: str, charsets: Sequence[str]) -> str:
   key = hashlib.pbkdf2_hmac(
           hash_name='sha256',
           password=master.encode('utf-8'),

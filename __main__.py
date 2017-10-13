@@ -2,10 +2,10 @@
 
 import argparse
 import sys
-import pow
+import prpg
 
 parser = argparse.ArgumentParser()
-pow.cli.prepare_parser(parser)
+prpg.cli.prepare_parser(parser)
 args = parser.parse_args()
 
 if hasattr(args, 'main'):

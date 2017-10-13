@@ -18,7 +18,7 @@ def rot13(s):
     for c in s)
 
 def get_words():
-  (raw, _) = subprocess.Popen([os.path.join(HERE, 'pow'), seed], stdout=subprocess.PIPE).communicate()
+  (raw, _) = subprocess.Popen([os.path.join(HERE, 'prpg'), seed], stdout=subprocess.PIPE).communicate()
   print()
   return raw.decode().strip().split(' ')
 def infer_choice(xs):

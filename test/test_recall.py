@@ -6,27 +6,27 @@ import pexpect
 
 import pytest
 
-import pow
+import prpg
 
-from . import spawn_pow
+from . import spawn_prpg
 
 
 @contextlib.contextmanager
 def temp_salts(salts):
   with tempfile.NamedTemporaryFile('w+') as f:
-    pow.saltfiles.dump_salts(f.name, salts)
+    prpg.saltfiles.dump_salts(f.name, salts)
     yield f.name
 
 @contextlib.contextmanager
 def spawn_recall(salts, args):
   with temp_salts(salts) as salt_path:
-    p = spawn_pow(f'recall --print --salt-file {shlex.quote(salt_path)} '+args)
+    p = spawn_prpg(f'recall --print --salt-file {shlex.quote(salt_path)} '+args)
     yield p
 
 
 def test_fails_when_no_salt_file():
   nonexistent_file = tempfile.mktemp()
-  p = spawn_pow(f'recall --salt-file {shlex.quote(nonexistent_file)} query')
+  p = spawn_prpg(f'recall --salt-file {shlex.quote(nonexistent_file)} query')
   import sys; p.logfile = sys.stdout
   p.expect(r'FileNotFoundError:', timeout=1)
 

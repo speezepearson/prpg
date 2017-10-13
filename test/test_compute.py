@@ -2,10 +2,10 @@ import re
 
 import pexpect
 
-from . import spawn_pow
+from . import spawn_prpg
 
 def expect_compute_result(options, password, expected):
-  p = spawn_pow('compute --print '+options)
+  p = spawn_prpg('compute --print '+options)
   p.expect(r'Master: ', timeout=1)
   p.sendline(password)
   p.expect(f'\n{re.escape(expected)}\r?\n', timeout=3)
@@ -21,7 +21,7 @@ def test_respects_charsets():
   expect_compute_result('--salt bar --charsets a-z 0-9', password='foo', expected='tsij6nvsie8twtd7')
 
 def test_respects_mangling():
-  p = spawn_pow('compute --print --mangle-master --salt bar')
+  p = spawn_prpg('compute --print --mangle-master --salt bar')
   import sys; p.logfile = sys.stdout
 
   for char in 'foo':

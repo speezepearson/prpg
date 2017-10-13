@@ -15,28 +15,28 @@ Example Usage
 Basic, standalone usage:
 
 ```bash
-~ $ python -m pow compute --salt 'example.com:username' --charsets a-z A-Z 0-9 '!'
+~ $ python -m prpg compute --salt 'example.com:username' --charsets a-z A-Z 0-9 '!'
 Master: ********
 Copied password for 'example.com:username' to clipboard.
 ~ $
 ```
 
-But it's a hassle to type all that every time. Pow can maintain a list of salts that you can easily fuzzy-search by prefix:
+But it's a hassle to type all that every time. PRPG can maintain a list of salts that you can easily fuzzy-search by prefix:
 
 ```bash
-~ $ alias addsalt='python -m pow salts add'
-~ $ alias pow='python -m pow recall'
+~ $ alias addsalt='python -m prpg salts add'
+~ $ alias prpg='python -m prpg recall'
 ~ $
 ~ $ # set up a new salt, once
 ~ $ addsalt 'example.com:username'
-Creating new salt-file in '/home/spencer/.pow-salts.json'
-~ $ rot13 < ~/.pow-salts.json
+Creating new salt-file in '/home/spencer/.prpg-salts.json'
+~ $ rot13 < ~/.prpg-salts.json
 {
   "example.com:username": {}
 }
 ~ $
 ~ $ # compute your password
-~ $ pow ex
+~ $ prpg ex
 Chosen salt: 'example.com:username'
 Master: ********
 Copied password for 'example.com:username' to clipboard.
@@ -45,16 +45,16 @@ Copied password for 'example.com:username' to clipboard.
 
 (The salt-file is ROT13-encrypted by default, as a weak protection against somebody grepping your computer for bank-related words.)
 
-Some sites have dumb password requirements. Pow's default charsets are `['a-z', 'A-Z', '0-9', '!']`, and the default postprocessing step is to trim the password to 16 characters -- but these can both be customized, by storing a JSON object alongside the salt:
+Some sites have dumb password requirements. PRPG's default charsets are `['a-z', 'A-Z', '0-9', '!']`, and the default postprocessing step is to trim the password to 16 characters -- but these can both be customized, by storing a JSON object alongside the salt:
 ```bash
 ~ $ addsalt 'we-disallow-punctuation.com:speeze' --json '{"charsets": ["a-z", "A-Z", "0-9"]}'
 ~ $ addsalt 'stupid-short-max-password-length.com:spencer' --json '{"postprocess": "lambda pw: pw[-12:]"}'
 ~ $
-~ $ pow we --print
+~ $ prpg we --print
 Chosen salt: 'we-disallow-punctuation.com:speeze'
 Master: ********
 dIfO89ZhvH07qbG3
-~ $ pow stu --print
+~ $ prpg stu --print
 Chosen salt: 'stupid-short-max-password-length.com:spencer'
 Master: ********
 mu8AaBgRzD2!
@@ -64,7 +64,7 @@ You can also just store random not-very-sensitive information you want to associ
 
 ```bash
 ~ $ addsalt 'blub.com:mylogin' --json '{"email address": "nobody@invalid.com", "birthday": "1970-01-01"}'
-~ $ python -m pow salts get bl
+~ $ python -m prpg salts get bl
 {'birthday': '1970-01-01', 'email address': 'nobody@invalid.com'}
 
 ```
@@ -149,7 +149,7 @@ The core algorithm here is a three-step process.
 2. Hash that key, using HMAC-SHA256, to obtain a 64-character hex string.
 3. Interpret that as a (gigantic) hexadecimal number, and write it in a particular mixed-radix system (described below) derived from the given charsets. The result is a string that contains at least one character from each charset.
 
-If the required charsets are `['a-z', 'A-Z', '0-9', '!']` (Pow's default), we define the corresponding numeral system to be `(...)(a-zA-Z0-9!)(a-z)(A-Z)(0-9)(!)`
+If the required charsets are `['a-z', 'A-Z', '0-9', '!']` (PRPG's default), we define the corresponding numeral system to be `(...)(a-zA-Z0-9!)(a-z)(A-Z)(0-9)(!)`
 
 That is: the last digit is drawn from the last charset; the second-to-last from the second-to-last; etc.; until there are no more charsets, and then all remaining digits are drawn from the concatenation of all the charsets.
 
