@@ -1,6 +1,7 @@
 import json
 import string
 import re
+import sys
 from .rot13 import rot13
 from .core import master_and_salt_to_password
 from .charsets import chars_matching_charspec
@@ -26,11 +27,17 @@ def disambiguate(xs):
   elif len(xs) == 1:
     return xs[0]
 
-  print('Choose:')
+  print('Options:', file=sys.stderr)
   for (i, x) in enumerate(xs):
-    print('  {}. {}'.format(i, x))
+    print('  {}. {}'.format(i+1, x), file=sys.stderr)
 
-  return xs[int(input('Your choice: '))]
+  print('Choose an option: ', end='', file=sys.stderr)
+  while True:
+    try:
+      return xs[int(input())-1]
+    except (ValueError, IndexError):
+      print('Invalid response. Try again: ', end='', file=sys.stderr)
+
 
 def master_and_salt_and_saltinfo_to_password(master, salt, salt_info):
   charset_specs = salt_info.get('charsets', ['a-z', 'A-Z', '0-9', '!'])
