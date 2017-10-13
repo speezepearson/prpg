@@ -8,7 +8,7 @@ def expect_compute_result(options, password, expected):
   p = spawn_prpg('compute --print '+options)
   p.expect(r'Master: ', timeout=1)
   p.sendline(password)
-  p.expect(f'\n{re.escape(expected)}\r?\n', timeout=3)
+  p.expect('\n'+re.escape(expected)+'\r?\n', timeout=3)
   p.expect(pexpect.EOF)
 
 def test_basic():
