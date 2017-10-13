@@ -108,10 +108,7 @@ There are also three special keys that object can have:
     D2YuMBK3qcVEdA3!
     ```
 
-Bells and Whistles
-------------------
-
-
+For more information about bells and whistles, consider running `prpg --help`.
 
 
 The Algorithm
