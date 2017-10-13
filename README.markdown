@@ -17,13 +17,17 @@ Example Usage
 Basic, standalone usage:
 
 ```bash
-~ $ prpg compute 'example.com:username' --charsets a-z A-Z 0-9 '!'
+~ $ prpg compute 'example.com:username'
 Master: ********
 Copied password for 'example.com:username' to clipboard.
 ~ $
 ```
 
-But it's a hassle to type all that every time. PRPG can maintain a list of salts that you can easily fuzzy-search by prefix:
+By default, this generates a 16-character password with all the major kinds of character (lower, upper, digit, punctuation) -- but this is customizable.
+
+But with this usage, you have to remember all your salts -- and remember them _exactly_ -- and type them in each time. What a hassle!
+
+For this reason, PRPG can maintain a list of salts that it can easily fuzzy-search by prefix:
 
 ```bash
 ~ $ alias addsalt='prpg salts add'
@@ -45,31 +49,58 @@ Copied password for 'example.com:username' to clipboard.
 ~ $
 ```
 
-(The salt-file is ROT13-encrypted by default, as a weak protection against somebody grepping your computer for bank-related words.)
+(The salt-file is ROT13-encrypted by default, as a weak protection against somebody grepping your computer for bank-related words. Yes, I _know_ that security through obscurity is frowned upon, but-- hey, it kinda works if you _stay_ obscure. Which I expect this package to do.)
 
-Some sites have dumb password requirements. PRPG's default charsets are `['a-z', 'A-Z', '0-9', '!']`, and the default postprocessing step is to trim the password to 16 characters -- but these can both be customized, by storing a JSON object alongside the salt:
-```bash
-~ $ addsalt 'we-disallow-punctuation.com:speeze' --json '{"charsets": ["a-z", "A-Z", "0-9"]}'
-~ $ addsalt 'stupid-short-max-password-length.com:spencer' --json '{"postprocess": "lambda pw: pw[-12:]"}'
-~ $
-~ $ prpg we --print
-Chosen salt: 'we-disallow-punctuation.com:speeze'
-Master: ********
-dIfO89ZhvH07qbG3
-~ $ prpg stu --print
-Chosen salt: 'stupid-short-max-password-length.com:spencer'
-Master: ********
-mu8AaBgRzD2!
-~ $
-```
-You can also just store random not-very-sensitive information you want to associate with the salt:
+Each salt has a JSON object associated with it, which you can view using `prpg salts get SALTNAME`. You can store arbitrary random insensitive information in this object:
 
 ```bash
 ~ $ addsalt 'blub.com:mylogin' --json '{"email address": "nobody@invalid.com", "birthday": "1970-01-01"}'
 ~ $ prpg salts get bl
 {'birthday': '1970-01-01', 'email address': 'nobody@invalid.com'}
-
 ```
+
+There are also three special keys that object can have:
+
+- `charsets` governs which characters may-and-must appear in the password:
+
+    ```bash
+    ~ $ addsalt 'we-disallow-punctuation.com:speeze' --json '{"charsets": ["a-z", "A-Z", "0-9"]}'
+    ~ $ prpg we --print
+    Chosen salt: 'we-disallow-punctuation.com:speeze'
+    Master: ********
+    dIfO89ZhvH07qbG3
+    ~ $
+    ```
+
+- `postprocess` lets you write an arbitrary transformation on the password, using a Python lambda:
+
+    ```bash
+    ~ $ addsalt 'stupid-short-max-password-length.com:spencer' --json '{"postprocess": "lambda pw: pw[-12:]"}'
+    ~ $ prpg stu --print
+    Chosen salt: 'stupid-short-max-password-length.com:spencer'
+    Master: ********
+    mu8AaBgRzD2!
+    ~ $
+    ```
+
+    If you try to use this feature, you may be perplexed by the fact that the string passed into the `postprocess` function is much longer than 16 characters: that's because it contains the full 32 bytes of entropy output by SHA-256, and the default `postprocess` function just trims it to 16 characters.
+
+- `salt` tells PRPG, "I know this salt is named `example.com:username`, but I you should salt my master password with this other string instead." This might be useful if, say, a site changes its domain name.
+
+    ```bash
+    ~ $ prpg salts add 'blub-two-point-oh.com:mylogin' --json '{"salt": "blub.com:mylogin"}'
+    ~ $ prpg recall blub.com --print
+    Chosen salt: 'blub.com:mylogin'
+    Master: ********
+    D2YuMBK3qcVEdA3!
+    ~ $ prpg recall blub-two --print
+    Chosen salt: 'blub-two-point-oh.com:mylogin'
+    Master: ********
+    D2YuMBK3qcVEdA3!
+    ```
+
+Bells and Whistles
+------------------
 
 
 
