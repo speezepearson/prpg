@@ -8,6 +8,12 @@ Reasons to use this scheme:
 - Unlike other password managers, your passwords are not stored anywhere, not even encrypted. It is impossible __even in principle__ for somebody to steal them out of this password manager, unless they have your master password (in which case you're obviously hosed) or they crack SHA256 and PBKDF2 (in which case we all are).
 - Unlike other password managers, the algorithm is simple enough that you could re-implement it yourself (if you're fairly computer-and-crypto-savvy; if not, hopefully one of your friends is). You don't need to trust me. You are not reliant on me. If you lose access to this package, or stop trusting it, or something, you can re-implement the scheme on your own in under ten minutes and recover all your passwords.
 
+Reasons to not use this scheme:
+
+- Because it doesn't store passwords, you can't store your pre-existing passwords.
+- If somebody steals your master password, they can rederive all your passwords. Other password managers kinda have this problem, but they at least require that the Bad Guy steal your vault-file too.
+- The passwords this produces are hard to type and harder to remember. Copy-paste is the only way you'll find this useful.
+
 
 Example Usage
 -------------
