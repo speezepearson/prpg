@@ -14,7 +14,7 @@ def expect_compute_result(options, password, expected):
 def test_basic():
   expect_compute_result('bar', password='foo', expected='JdS3dpz4li4rjD7!')
 
-def test_respects_postprocessing():
+def test_respects_postprocess():
   expect_compute_result('bar --charsets a-z 0-9 --postprocess "lambda s: s.upper()[-8:]"', password='foo', expected='IE8TWTD7')
 
 def test_respects_charsets():

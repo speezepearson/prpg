@@ -51,3 +51,28 @@ def test_disambiguates_ambiguous_query():
       p.sendline('foo')
       p.expect(r'\n'+output+r'\r?\n')
       p.expect(pexpect.EOF)
+
+
+def test_respects_salt():
+  with spawn_recall(salts={'bar': {'salt': 'baz'}}, args='b') as p:
+    import sys; p.logfile = sys.stdout
+    p.expect(r'Master: ', timeout=1)
+    p.sendline('foo')
+    p.expect(r'\nOjc2oC!Z1avHfU0!\r?\n')
+    p.expect(pexpect.EOF)
+
+def test_respects_charsets():
+  with spawn_recall(salts={'bar': {'charsets': ['a-z', '0-9']}}, args='b') as p:
+    import sys; p.logfile = sys.stdout
+    p.expect(r'Master: ', timeout=1)
+    p.sendline('foo')
+    p.expect(r'\ntsij6nvsie8twtd7\r?\n')
+    p.expect(pexpect.EOF)
+
+def test_respects_postprocess():
+  with spawn_recall(salts={'bar': {'postprocess': 'lambda s: s[::3]'}}, args='b') as p:
+    import sys; p.logfile = sys.stdout
+    p.expect(r'Master: ', timeout=1)
+    p.sendline('foo')
+    p.expect(r'\nPcVnav9H2zSplr7\r?\n')
+    p.expect(pexpect.EOF)
