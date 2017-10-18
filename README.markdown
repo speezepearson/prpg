@@ -4,8 +4,8 @@ A one-line password manager.
 
 ## Table of Contents
 - [Summary](#summary)
-- [Why this?](#why-this)
-- [Why not this?](#why-not-this)
+- [Why is this good?](#why-is-this-good)
+- [Why is this bad?](#why-is-this-bad)
 - [Installation/Usage](#installationusage)
 - [Internals/Reimplemenation](#internalsreimplementation)
 
@@ -19,16 +19,16 @@ It turns out that this is jaw-droppingly simple to implement:
 In effect, this is a cryptographically secure pseudo-random password generator (hence the name, PRPG): a deterministic algorithm that maps seeds (i.e. [master, site] pairs) to passwords, in such a way that no number of [input, output] pairs will give you information about the outputs corresponding to any other inputs.
 
 
-## Why this?
+## Why is this good?
 
 - As with other password managers, you only have to remember one password.
 - Unlike other password managers, your passwords are not stored anywhere, not even encrypted. It is impossible __even in principle__ for somebody to steal them out of this password manager, unless they have your master password (in which case you're obviously doomed) or they crack SHA256 or PBKDF2 (in which case we all are).
 - Kinda like other password managers, you can easily get your passwords on a foreign computer. Just `pip install prpg && prpg compute example.com:username`. (Well... as with other password managers, typing your master password into a foreign computer is a terrible idea. But you may be interested in the `--mangle-master` command-line option, which, at the cost of some tedious manual work, lets you enter your master password in a way that ensures it can't be recovered unless the bad guys are straight-up snooping on this process's memory or the OS's RNG.)
 - Unlike other password managers, you can carry this password manager around in your head. You just need to remember your master password and the algorithm. This lets you re-derive all of your passwords from scratch (if you're fairly computer-savvy), from memory, in under five minutes, using only extremely-widespread rigorously-specified algorithms that every major language has functionally-exactly-identical implementations of. You don't need to trust me. You are not reliant on me. If you lose access to this package, or stop trusting it, or something, you can re-implement the scheme on your own and recover all your passwords.
 
-## Why not this?
+## Why is this bad?
 
-- Because it doesn't store passwords, you can't store your pre-existing passwords. (Yet. This might come.)
+- It doesn't store passwords, so you can't store your pre-existing passwords. (Yet. This might come.)
 - If somebody steals your master password, they can rederive all your passwords. Other password managers kinda have this problem, but they at least require that the Bad Guy steal your vault-file too. (Unless the password manager is cloud-based, in which case you're super doomed.)
 - The passwords this produces are hard to type and harder to remember. Copy-paste is the only way you'll find this useful.
 
@@ -76,7 +76,7 @@ Copied password for 'example.com:username' to clipboard.
 
 (Also, there's nothing special about the format `sitename.com:myusername`! The salts can be anything you want.)
 
-Each salt has a JSON object associated with it, which you can view using `prpg salts get SALTNAME`. You can store arbitrary random insensitive information in this object:
+Each salt has a JSON object associated with it, which you can view using `prpg salts get SALTNAME`. You can store arbitrary information in this object (but remember it's stored in, effectively, plaintext! So nothing sensitive, please!):
 
 ```bash
 ~ $ addsalt 'blub.com:mylogin' --json '{"email address": "nobody@invalid.com", "birthday": "1970-01-01"}'
