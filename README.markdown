@@ -1,6 +1,6 @@
 A one-line password manager.
 
-`base64(sha256(pbkdf2_hmac_sha256(master, salt=site+username, iterations=1_000_000)))[:16]+'Aa0+'`
+`base64(sha256(pbkdf2_hmac('sha256', master, salt=site+username, iterations=1_000_000)))[:16]+'Aa0+'`
 
 ## Table of Contents
 - [Summary](#summary)
@@ -122,7 +122,7 @@ For more information about bells and whistles, consider running `prpg --help`.
 
 In short:
 
-- `base64(sha256(pbkdf2_hmac_sha256(master, salt, iterations=10**6)))`
+- `base64(sha256(pbkdf2_hmac('sha256', master, salt, iterations=10**6)))`
 - Default postprocessing: take the first 16 characters, and append `Aa0+` (the lowest-value base64 characters from each character-class used by base64, i.e. lower/upper/digit/punctuation, make a nice Schelling point).
 
 I chose this to maximize "ease of re-implementing from memory, using only extremely-widespread, precisely-specified library functions," subject to the constraints "must be cryptographically respectable" and "must satisfy most password requirements by default."
