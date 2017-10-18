@@ -1,4 +1,6 @@
-A very simple password manager.
+A one-line password manager.
+
+`base64(sha256(pbkdf2_hmac_sha256(master, salt=site+username, iterations=1_000_000)))[:16]+'Aa0+'`
 
 ## Table of Contents
 - [Summary](#summary)
@@ -10,10 +12,11 @@ A very simple password manager.
 ## Summary
 The big idea: you have a master password. All your other passwords are, effectively, digital signatures: strings that are easy to produce for somebody who knows the master password, but prohibitively difficult to compute for somebody who doesn't.
 
-It turns out that this is extremely simple to implement:
+It turns out that this is jaw-droppingly simple to implement:
 
 ![diagram](diagram.png)
 
+In effect, this is a cryptographically secure pseudo-random password generator (hence the name, PRPG): a deterministic algorithm that maps seeds (i.e. [master, site] pairs) to passwords, in such a way that no number of [input, output] pairs will give you information about the outputs corresponding to any other inputs.
 
 
 ## Why this?
@@ -21,7 +24,7 @@ It turns out that this is extremely simple to implement:
 - As with other password managers, you only have to remember one password.
 - Unlike other password managers, your passwords are not stored anywhere, not even encrypted. It is impossible __even in principle__ for somebody to steal them out of this password manager, unless they have your master password (in which case you're obviously doomed) or they crack SHA256 or PBKDF2 (in which case we all are).
 - Kinda like other password managers, you can easily get your passwords on a foreign computer. Just `pip install prpg && prpg compute example.com:username`. (Well... as with other password managers, typing your master password into a foreign computer is a terrible idea. But you may be interested in the `--mangle-master` command-line option, which, at the cost of some tedious manual work, lets you enter your master password in a way that ensures it can't be recovered unless the bad guys are straight-up snooping on this process's memory or the OS's RNG.)
-- Unlike other password managers, you can carry this password manager around in your head. You just need to remember your master password and the algorithm: `base64(sha256(pbkdf2_hmac_sha256(master, site, 10**6)))[:16]+'Aa0+'`. This lets you re-derive all of your passwords from scratch (if you're fairly computer-savvy), from memory, in under five minutes, using only extremely-widespread rigorously-specified algorithms that every major language has functionally-exactly-identical implementations of. You don't need to trust me. You are not reliant on me. If you lose access to this package, or stop trusting it, or something, you can re-implement the scheme on your own and recover all your passwords.
+- Unlike other password managers, you can carry this password manager around in your head. You just need to remember your master password and the algorithm. This lets you re-derive all of your passwords from scratch (if you're fairly computer-savvy), from memory, in under five minutes, using only extremely-widespread rigorously-specified algorithms that every major language has functionally-exactly-identical implementations of. You don't need to trust me. You are not reliant on me. If you lose access to this package, or stop trusting it, or something, you can re-implement the scheme on your own and recover all your passwords.
 
 ## Why not this?
 
@@ -122,7 +125,7 @@ In short:
 - `base64(sha256(pbkdf2_hmac_sha256(master, salt, iterations=10**6)))`
 - Default postprocessing: take the first 16 characters, and append `Aa0+` (the lowest-value base64 characters from each character-class used by base64, i.e. lower/upper/digit/punctuation, make a nice Schelling point).
 
-I chose this to maximize "ease of re-implementing from memory, using only extremely-widespread, precisely-specified library functions," subject to the constraints "must be cryptographically respectable" and "must be suitable for most password systems by default."
+I chose this to maximize "ease of re-implementing from memory, using only extremely-widespread, precisely-specified library functions," subject to the constraints "must be cryptographically respectable" and "must satisfy most password requirements by default."
 
 
 ### As Code
