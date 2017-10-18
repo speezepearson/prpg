@@ -2,23 +2,20 @@ import re
 
 import pexpect
 
-from . import spawn_prpg
+from . import spawn_prpg, expect_exact_line
 
 def expect_compute_result(options, password, expected):
   p = spawn_prpg('compute --print '+options)
   p.expect(r'Master: ', timeout=1)
   p.sendline(password)
-  p.expect('\n'+re.escape(expected)+'\r?\n', timeout=3)
+  expect_exact_line(p, expected)
   p.expect(pexpect.EOF)
 
 def test_basic():
-  expect_compute_result('bar', password='foo', expected='JdS3dpz4li4rjD7!')
+  expect_compute_result('bar', password='foo', expected='CUbe1hi1tC/BsOGfAa0+')
 
 def test_respects_postprocess():
-  expect_compute_result('bar --charsets a-z 0-9 --postprocess "lambda s: s.upper()[-8:]"', password='foo', expected='IE8TWTD7')
-
-def test_respects_charsets():
-  expect_compute_result('bar --charsets a-z 0-9', password='foo', expected='tsij6nvsie8twtd7')
+  expect_compute_result('bar --postprocess "lambda s: s.upper()[-8:]"', password='foo', expected='RUEKSPE=')
 
 def test_respects_confirmation():
   p = spawn_prpg('compute --print --confirm bar')
@@ -27,7 +24,7 @@ def test_respects_confirmation():
   p.sendline('foo')
   p.expect(r'Confirm: ', timeout=1)
   p.sendline('foo')
-  p.expect('\nJdS3dpz4li4rjD7!\r?\n', timeout=3)
+  expect_exact_line(p, 'CUbe1hi1tC/BsOGfAa0+')
   p.expect(pexpect.EOF)
 
   p = spawn_prpg('compute --print --confirm bar')
@@ -40,7 +37,7 @@ def test_respects_confirmation():
   p.sendline('foo')
   p.expect(r'Confirm: ', timeout=1)
   p.sendline('foo')
-  p.expect('\nJdS3dpz4li4rjD7!\r?\n', timeout=3)
+  expect_exact_line(p, 'CUbe1hi1tC/BsOGfAa0+')
   p.expect(pexpect.EOF)
 
 def test_respects_mangling():
@@ -57,5 +54,5 @@ def test_respects_mangling():
   p.expect(r'Next translated character:', timeout=1)
   p.sendline('')
 
-  p.expect(r'\nJdS3dpz4li4rjD7!\r?\n', timeout=3)
+  expect_exact_line(p, 'CUbe1hi1tC/BsOGfAa0+')
   p.expect(pexpect.EOF)

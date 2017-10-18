@@ -5,7 +5,7 @@ import sys
 
 from .clipboard import copy_to_clipboard
 from .rot13 import rot13
-from .core import number_to_password, master_and_salt_to_password
+from .core import master_and_salt_to_password
 
 from . import cli
 

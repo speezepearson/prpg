@@ -4,7 +4,6 @@ import re
 import sys
 from .rot13 import rot13
 from .core import master_and_salt_to_password
-from .charsets import chars_matching_charspec
 
 def load_salts(path):
   with open(path) as f:
@@ -40,12 +39,9 @@ def disambiguate(xs):
 
 
 def master_and_salt_and_saltinfo_to_password(master, salt, salt_info):
-  charset_specs = salt_info.get('charsets', ['a-z', 'A-Z', '0-9', '!'])
-  charsets = [chars_matching_charspec(spec) for spec in charset_specs]
-
-  postprocess = eval(salt_info['postprocess']) if 'postprocess' in salt_info else (lambda password: password[-16:])
-
-  if 'salt' in salt_info:
-    salt = salt_info['salt']
-
-  return postprocess(master_and_salt_to_password(master, salt, charsets))
+  return master_and_salt_to_password(
+    master=master,
+    salt=salt_info.get('salt', salt),
+    **({'postprocess': eval(salt_info['postprocess'])}
+       if 'postprocess' in salt_info
+       else {}))

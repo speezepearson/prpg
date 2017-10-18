@@ -8,7 +8,7 @@ import pytest
 
 import prpg
 
-from . import spawn_prpg
+from . import spawn_prpg, expect_exact_line
 
 
 @contextlib.contextmanager
@@ -39,17 +39,17 @@ def test_runs_fine_with_unambiguous_query():
     import sys; p.logfile = sys.stdout
     p.expect(r'Master: ', timeout=1)
     p.sendline('foo')
-    p.expect(r'\nJdS3dpz4li4rjD7!\r?\n')
+    expect_exact_line(p, 'CUbe1hi1tC/BsOGfAa0+')
     p.expect(pexpect.EOF)
 
 def test_disambiguates_ambiguous_query():
-  for (choice, output) in [('1', 'JdS3dpz4li4rjD7!'), ('2', 'Ojc2oC!Z1avHfU0!')]:
+  for (choice, output) in [('1', r'CUbe1hi1tC/BsOGfAa0+'), ('2', r'6QK2fN3zFNLFyLYBAa0+')]:
     with spawn_recall(salts={'bar': {}, 'baz': {}}, args='b') as p:
       p.expect(r'Choose an option:', timeout=1)
       p.sendline(choice)
       p.expect(r'Master: ', timeout=1)
       p.sendline('foo')
-      p.expect(r'\n'+output+r'\r?\n')
+      expect_exact_line(p, output)
       p.expect(pexpect.EOF)
 
 
@@ -58,21 +58,13 @@ def test_respects_salt():
     import sys; p.logfile = sys.stdout
     p.expect(r'Master: ', timeout=1)
     p.sendline('foo')
-    p.expect(r'\nOjc2oC!Z1avHfU0!\r?\n')
-    p.expect(pexpect.EOF)
-
-def test_respects_charsets():
-  with spawn_recall(salts={'bar': {'charsets': ['a-z', '0-9']}}, args='b') as p:
-    import sys; p.logfile = sys.stdout
-    p.expect(r'Master: ', timeout=1)
-    p.sendline('foo')
-    p.expect(r'\ntsij6nvsie8twtd7\r?\n')
+    expect_exact_line(p, '6QK2fN3zFNLFyLYBAa0+')
     p.expect(pexpect.EOF)
 
 def test_respects_postprocess():
-  with spawn_recall(salts={'bar': {'postprocess': 'lambda s: s[::3]'}}, args='b') as p:
+  with spawn_recall(salts={'bar': {'postprocess': 'lambda s: s'}}, args='b') as p:
     import sys; p.logfile = sys.stdout
     p.expect(r'Master: ', timeout=1)
     p.sendline('foo')
-    p.expect(r'\nPcVnav9H2zSplr7\r?\n')
+    expect_exact_line(p, 'CUbe1hi1tC/BsOGfc/2dZpL/sl2VLKYM/B3GRUEKSpE=')
     p.expect(pexpect.EOF)
