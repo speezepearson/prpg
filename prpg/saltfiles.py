@@ -41,7 +41,7 @@ def disambiguate(xs):
 def master_and_salt_and_saltinfo_to_password(master, salt, salt_info):
   return master_and_salt_to_password(
     master=master,
-    salt=salt_info.get('salt', salt),
-    **({'postprocess': eval(salt_info['postprocess'])}
-       if 'postprocess' in salt_info
+    salt=salt_info.get('__salt__', salt),
+    **({'postprocess': eval(salt_info['__postprocess__'])}
+       if '__postprocess__' in salt_info
        else {}))

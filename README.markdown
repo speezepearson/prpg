@@ -87,12 +87,12 @@ Each salt has a JSON object associated with it, which you can view using `prpg s
 {'birthday': '1970-01-01', 'email address': 'nobody@invalid.com'}
 ```
 
-There are also three special keys that object can have:
+There are also some special keys that objects can have, denoted by `__double-underscores__`:
 
-- `postprocess` lets you write an arbitrary transformation on the password, using a Python lambda:
+- `__postprocess__` lets you write an arbitrary transformation on the password, using a Python lambda:
 
     ```bash
-    ~ $ addsalt 'stupid-short-max-password-length.com:spencer' --json '{"postprocess": "lambda pw: pw[:12]"}'
+    ~ $ addsalt 'stupid-short-max-password-length.com:spencer' --json '{"__postprocess__": "lambda pw: pw[:12]"}'
     ~ $ prpg stu --print
     Chosen salt: 'stupid-short-max-password-length.com:spencer'
     Master: ********
@@ -102,10 +102,10 @@ There are also three special keys that object can have:
 
     (Details: the string that gets passed to your lambda function is the full output of `base64(sha256(...))` -- that is to say, a 32-byte pseudorandom number, base64-encoded. This works out to 44 characters, all of which are completely pseudorandom and independent except the last two.)
 
-- `salt` tells PRPG, "I know this salt is named `example.com:username`, but you should salt my master password with this other string instead." This might be useful if, say, a site changes its domain name.
+- `__salt__` tells PRPG, "I know this salt is named `example.com:username`, but you should salt my master password with this other string instead." This might be useful if, say, a site changes its domain name.
 
     ```bash
-    ~ $ prpg salts add 'blub-two-point-oh.com:mylogin' --json '{"salt": "blub.com:mylogin"}'
+    ~ $ prpg salts add 'blub-two-point-oh.com:mylogin' --json '{"__salt__": "blub.com:mylogin"}'
     ~ $ prpg recall blub.com --print
     Chosen salt: 'blub.com:mylogin'
     Master: ********
@@ -116,7 +116,7 @@ There are also three special keys that object can have:
     EFX332fc3617Q1ZZAa0+
     ```
 
-- `xor` currently does nothing, but is reserved. (To enable storage of non-generated passwords, I'm considering adding this field that will be XORed with the generated password -- a sort of one-time pad. I'm not going to add this feature until I'm very sure there's a nice safe implementation, though.)
+(All other `__double-underscore__` keys are also reserved for future bells and whistles. All non-double-underscore keys are fair game.)
 
 For more information about bells and whistles, consider running `prpg --help`.
 

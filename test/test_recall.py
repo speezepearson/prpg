@@ -54,7 +54,7 @@ def test_disambiguates_ambiguous_query():
 
 
 def test_respects_salt():
-  with spawn_recall(salts={'bar': {'salt': 'baz'}}, args='b') as p:
+  with spawn_recall(salts={'bar': {'__salt__': 'baz'}}, args='b') as p:
     import sys; p.logfile = sys.stdout
     p.expect(r'Master: ', timeout=1)
     p.sendline('foo')
@@ -62,7 +62,7 @@ def test_respects_salt():
     p.expect(pexpect.EOF)
 
 def test_respects_postprocess():
-  with spawn_recall(salts={'bar': {'postprocess': 'lambda s: s'}}, args='b') as p:
+  with spawn_recall(salts={'bar': {'__postprocess__': 'lambda s: s'}}, args='b') as p:
     import sys; p.logfile = sys.stdout
     p.expect(r'Master: ', timeout=1)
     p.sendline('foo')
