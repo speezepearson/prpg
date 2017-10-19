@@ -1,11 +1,11 @@
 A one-line password manager.
 
-`base64(sha256(pbkdf2_hmac('sha256', master, salt=site+username, iterations=1_000_000)))[:16]+'Aa0+'`
+This package is a nice command-line wrapper around the line `base64(sha256(pbkdf2_hmac('sha256', master, salt=site+username, iterations=10**6)))[:16]+'Aa0+'`, to make it easy to use.
 
 ## Table of Contents
 - [Summary](#summary)
-- [Why is this good?](#why-is-this-good)
-- [Why is this bad?](#why-is-this-bad)
+- [Advantages over other password managers](#advantages-over-other-password-managers)
+- [Advantages of other password managers](#advantages-of-other-password-managers)
 - [Installation/Usage](#installationusage)
 - [Internals/Reimplemenation](#internalsreimplementation)
 
@@ -19,17 +19,16 @@ It turns out that this is jaw-droppingly simple to implement:
 In effect, this is a cryptographically secure pseudo-random password generator (hence the name, PRPG): a deterministic algorithm that maps seeds (i.e. [master, site] pairs) to passwords, in such a way that no number of [input, output] pairs will give you information about the outputs corresponding to any other inputs.
 
 
-## Why is this good?
+## Advantages over other password managers
 
-- As with other password managers, you only have to remember one password.
-- Unlike other password managers, your passwords are not stored anywhere, not even encrypted. It is impossible __even in principle__ for somebody to steal them out of this password manager, unless they have your master password (in which case you're obviously doomed) or they crack SHA256 or PBKDF2 (in which case we all are).
-- Kinda like other password managers, you can easily get your passwords on a foreign computer. Just `pip install prpg && prpg compute example.com:username`. (Well... as with other password managers, typing your master password into a foreign computer is a terrible idea. But you may be interested in the `--mangle-master` command-line option, which, at the cost of some tedious manual work, lets you enter your master password in a way that ensures it can't be recovered unless the bad guys are straight-up snooping on this process's memory or the OS's RNG.)
-- Unlike other password managers, you can carry this password manager around in your head. You just need to remember your master password and the algorithm. This lets you re-derive all of your passwords from scratch (if you're fairly computer-savvy), from memory, in under five minutes, using only extremely-widespread rigorously-specified algorithms that every major language has functionally-exactly-identical implementations of. You don't need to trust me. You are not reliant on me. If you lose access to this package, or stop trusting it, or something, you can re-implement the scheme on your own and recover all your passwords.
+- Your passwords are not stored anywhere, not even encrypted. It is impossible __even in principle__ for somebody to steal them out of this password manager, unless they have your master password (in which case you're obviously doomed) or they crack SHA256 or PBKDF2 (in which case we all are).
+- You can carry this password manager around in your head. By remembering only your master password and the algorithm, you can re-derive all of your passwords from scratch (if you're fairly computer-savvy), from memory, in under five minutes, using only extremely-widespread rigorously-specified algorithms that every major language has functionally-exactly-identical implementations of. You don't need to trust me. You are not reliant on me. If you lose access to this package, or stop trusting it, or something, you can re-implement the scheme on your own and recover all your passwords.
+- At the expense of some tedious manual labor, you can enter your master password in a way that ensures it can't be recovered unless the bad guys are straight-up snooping on this process's memory or the OS's RNG.)
 
-## Why is this bad?
+## Advantages of other password managers
 
-- It doesn't store passwords, so you can't store your pre-existing passwords. (Yet. This might come.)
-- If somebody steals your master password, they can rederive all your passwords. Other password managers kinda have this problem, but they at least require that the Bad Guy steal your vault-file too. (Unless the password manager is cloud-based, in which case you're super doomed.)
+- Since this doesn't store passwords, you can't store your pre-existing passwords. (Yet. This might come.)
+- If somebody steals your master password for this system, they can rederive all your passwords. Other password managers kinda have this problem, but they at least require that the Bad Guy steal your vault-file too. (Unless the password manager is cloud-based, in which case you're super doomed.)
 - The passwords this produces are hard to type and harder to remember. Copy-paste is the only way you'll find this useful.
 
 
