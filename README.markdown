@@ -2,9 +2,10 @@ A one-line password manager.
 
 Compared to other password managers:
 
-- Pro: __secure,__ in that it doesn't store your passwords(!).
+- Pro: __secure,__ in that it doesn't store your passwords(!), and what isn't stored can't be stolen.
 - Pro: __enables you to recover your passwords even if this software stops working__(!) as long as you have a handful of extremely-widespread cryptographic tools (like those in the Python standard library).
 - Con: __doesn't let you store your existing/custom passwords__ because all its passwords are auto-generated piles of hard-to-type mush (though, thanks to copy-paste, "hard-to-type" isn't usually an issue).
+- Con: __no browser integration__ (which, I know, is how normal people like their password managers) (yet).
 
 ## Table of Contents
 - [Summary](#summary)
