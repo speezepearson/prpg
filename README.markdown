@@ -134,18 +134,68 @@ I chose this to maximize "ease of re-implementing from memory, using only extrem
 
 ### As Code
 
-Here is the complete algorithm:
+Here's the core algorithm in a variety of languages, for your copy-pasting pleasure:
 
-```python
-import hashlib, base64
+* __Python:__
 
-def master_and_salt_to_password(master: str, salt: str, postprocess=(lambda pw: pw[:16]+'Aa0+')) -> str:
-  key = hashlib.pbkdf2_hmac(
-          hash_name='sha256',
-          password=master.encode('utf-8'),
-          salt=salt.encode('utf-8'),
-          iterations=10**6)
-  sha = hashlib.sha256(key).digest()
-  pw = base64.b64encode(sha).decode('utf-8')
-  return postprocess(pw)
-```
+    ```python
+    import hashlib, base64
+
+    def master_and_salt_to_password(master: str, salt: str, postprocess=(lambda pw: pw[:16]+'Aa0+')) -> str:
+      key = hashlib.pbkdf2_hmac(
+              hash_name='sha256',
+              password=master.encode('utf-8'),
+              salt=salt.encode('utf-8'),
+              iterations=10**6)
+      sha = hashlib.sha256(key).digest()
+      pw = base64.b64encode(sha).decode('utf-8')
+      return postprocess(pw)
+    ```
+* __Node:__
+
+    ```javascript
+    crypto = require('crypto');
+    function masterAndSaltToPassword(master, salt, postprocess=((s) => s.slice(0,16)+'Aa0+')) {
+      key = crypto.pbkdf2Sync(master, salt, 10**6, 32, 'sha256');
+      sha = crypto.createHash('sha256')
+            .update(key)
+            .digest();
+      pw = sha.toString('base64');
+      return postprocess(pw);
+    }
+    ```
+
+* __Ruby:__
+
+    ```ruby
+    require 'openssl'
+    require 'base64'
+    def master_and_salt_to_password(master, salt)
+      key = OpenSSL::PKCS5.pbkdf2_hmac('foo', 'bar', 10**6, 32, OpenSSL::Digest::SHA256.new)
+      sha = OpenSSL::Digest::SHA256.digest(key)
+      result = Base64.encode64(sha)
+      return (if block_given? then (yield result) else (result.slice(0, 16) + "Aa0+") end)
+    end
+    ```
+
+* __Haskell:__
+
+    ```haskell
+    -- requires packages "cryptohash", "pbkdf", "base64-bytestring", "base16-bytestring"
+    import Crypto.PBKDF (sha256PBKDF2)
+    import qualified Crypto.Hash.SHA256 as SHA256
+    import qualified Data.ByteString.UTF8 as UTF8
+    import qualified Data.ByteString.Base64 as Base64
+    import qualified Data.ByteString.Base16 as Base16
+
+    defaultPostprocess :: String -> String
+    defaultPostprocess s = (take 16 s) ++ "Aa0+"
+
+    masterAndSaltToPassword :: String -> String -> String
+    masterAndSaltToPassword master salt = (
+      UTF8.toString $ Base64.encode $
+      SHA256.hash $
+      fst $ Base16.decode $ UTF8.fromString $ -- bytes <- hex string
+      sha256PBKDF2 master salt (10^6) 32 -- hex string <- args
+      )
+    ```
