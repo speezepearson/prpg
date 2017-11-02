@@ -21,14 +21,14 @@ It turns out that this is jaw-droppingly simple to implement:
 
 ![diagram](diagram.png)
 
-In effect, this is a cryptographically secure pseudo-random password generator (hence the name, PRPG): a deterministic algorithm that maps seeds (i.e. [master, site] pairs) to passwords, in such a way that no number of [input, output] pairs will give you information about the outputs corresponding to any other inputs.
+In effect, this is a cryptographically secure pseudo-random password generator (hence the name, PRPG): a deterministic algorithm that maps seeds (i.e. [master, site] pairs) to passwords, in such a way that no number of [site, password] pairs will give you information about the passwords corresponding to any other sites.
 
 
 ## Advantages over other password managers
 
 - Your passwords are not stored anywhere, not even encrypted. It is impossible __even in principle__ for somebody to steal them out of this password manager, unless they have your master password (in which case you're obviously doomed) or they crack SHA256 or PBKDF2 (in which case we all are).
 - You can carry this password manager around in your head. By remembering only your master password and the algorithm, you can re-derive all of your passwords from scratch (if you're fairly computer-savvy), from memory, in under five minutes, using only extremely-widespread rigorously-specified algorithms that every major language has functionally-exactly-identical implementations of. You don't need to trust me. You are not reliant on me. If you lose access to this package, or stop trusting it, or something, you can re-implement the scheme on your own and recover all your passwords.
-- At the expense of some tedious manual labor, you can enter your master password in a way that ensures it can't be recovered unless the bad guys are straight-up snooping on this process's memory or the OS's RNG.)
+- At the expense of some tedious manual labor, you can enter your master password in a way that ensures it can't be recovered unless the bad guys are straight-up snooping on this process's memory or the OS's RNG.
 
 ## Advantages of other password managers
 
