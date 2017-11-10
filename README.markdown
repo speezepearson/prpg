@@ -151,7 +151,7 @@ Here's the core algorithm in a variety of languages, for your copy-pasting pleas
       pw = base64.b64encode(sha).decode('utf-8')
       return postprocess(pw)
     ```
-* __Node:__
+* __Node.js:__
 
     ```javascript
     crypto = require('crypto');
@@ -162,6 +162,26 @@ Here's the core algorithm in a variety of languages, for your copy-pasting pleas
             .digest();
       pw = sha.toString('base64');
       return postprocess(pw);
+    }
+    ```
+
+* __JavaScript (for a web page):__
+
+    ```javascript
+    // base64js comes from https://raw.githubusercontent.com/beatgammit/base64-js/master/base64js.min.js
+    function utf8encode(s) {return new TextEncoder('utf-8').encode(s);}
+    function masterAndSaltToPassword(master, salt, postprocess=((s) => s.slice(0,16)+'Aa0+')) {
+      return Subtle.importKey('raw', utf8encode(master), {name: 'PBKDF2', hash: 'SHA-256'}, false, ['deriveKey']).then((master) => {
+        return Subtle.deriveKey({name: "PBKDF2", salt: utf8encode(salt), iterations: 10**6, hash: 'SHA-256'}, master, {name: 'HMAC', hash: 'SHA-256'}, true, ['sign']).then((key) => {
+          return Subtle.exportKey('raw', key).then((exp) => {
+            exp = exp.slice(0, 32);
+            return Subtle.digest('SHA-256', exp).then((hash) => {
+              var encoded = base64js.fromByteArray(new Uint8Array(hash));
+              return encoded.slice(0, 16) + 'Aa0+';
+            });
+          });
+        });
+      });
     }
     ```
 
