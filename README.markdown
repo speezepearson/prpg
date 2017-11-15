@@ -50,7 +50,7 @@ Copied password for 'example.com:username' to clipboard.
 ~ $
 ```
 
-By default, this generates a 16-character password with all the major kinds of character (lower, upper, digit, punctuation) -- but this is customizable.
+By default, this generates a 20-character password with all the major kinds of character (lower, upper, digit, punctuation) and 96 bits of entropy -- but this is customizable.
 
 But with this usage, you have to remember all your sites/usernames/etc. -- and remember them _exactly_ -- and type them in each time. What a hassle!
 
