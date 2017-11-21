@@ -1,6 +1,5 @@
 import tempfile
 import contextlib
-import shlex
 import os
 import pexpect
 
@@ -20,15 +19,15 @@ def temp_salts(salts):
 @contextlib.contextmanager
 def spawn_recall(salts, args):
   with temp_salts(salts) as salt_path:
-    p = spawn_prpg('recall --print --salt-file '+shlex.quote(salt_path)+' '+args)
+    p = spawn_prpg("recall --print --salt-file '{}' {}".format(salt_path, args))
     yield p
 
 
 def test_fails_when_no_salt_file():
   nonexistent_file = tempfile.mktemp()
-  p = spawn_prpg('recall --salt-file '+shlex.quote(nonexistent_file)+' query')
+  p = spawn_prpg("recall --salt-file '{}' query".format(nonexistent_file))
   import sys; p.logfile = sys.stdout
-  p.expect(r'FileNotFoundError:', timeout=1)
+  p.expect(r'(FileNotFoundError|IOError):', timeout=1)
 
 def test_fails_when_no_salt_matches_query():
   with spawn_recall(salts={'bar': {}}, args='q') as p:

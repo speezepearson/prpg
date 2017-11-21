@@ -11,7 +11,7 @@ def load_salts(path):
     return json.loads(rot13(f.read()))
 
 def dump_salts(path, salts):
-  payload = rot13(json.dumps(salts, sort_keys=True, indent='  '))
+  payload = rot13(json.dumps(salts, sort_keys=True, indent=2))
   with open(path, 'w') as f:
     f.write(payload)
     f.write('\n')
