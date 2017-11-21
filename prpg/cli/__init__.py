@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 
+from __future__ import print_function
 import argparse
 import os
 import sys
 from ..clipboard import copy_to_clipboard
 
-def print_or_copy_and_notify(s: str, should_print: bool, message:str = ''):
+def print_or_copy_and_notify(s, should_print, message = ''):
   if should_print:
     print(s)
   else:

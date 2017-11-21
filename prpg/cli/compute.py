@@ -1,3 +1,4 @@
+from __future__ import print_function
 from . import print_or_copy_and_notify
 from .askpass import askpass
 from .common_args import add_mangle_master_argument, add_print_argument, add_confirm_argument

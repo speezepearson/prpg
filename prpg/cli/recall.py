@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 
 from . import print_or_copy_and_notify

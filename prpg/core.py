@@ -8,7 +8,7 @@ This algorithm (and the salt, and your master password) is all you need in order
 import hashlib
 import base64
 
-def master_and_salt_to_password(master: str, salt: str, postprocess=(lambda pw: pw[:16]+'Aa0+')) -> str:
+def master_and_salt_to_password(master, salt, postprocess=(lambda pw: pw[:16]+'Aa0+')):
   key = hashlib.pbkdf2_hmac(
           hash_name='sha256',
           password=master.encode('utf-8'),
