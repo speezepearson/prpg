@@ -14,8 +14,8 @@ def add_print_argument(parser):
     '--print', action='store_true',
     help='print output instead of copying to clipboard')
 
-def add_query_argument(parser):
-  parser.add_argument('query', help='regular expression matching beginning of desired salt')
+def add_query_arguments(parser):
+  parser.add_argument('queries', nargs='+', help='regular expressions, joined by ".*", matching beginning of desired salt')
 
 def add_confirm_argument(parser):
   parser.add_argument(

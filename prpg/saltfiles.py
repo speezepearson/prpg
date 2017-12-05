@@ -16,7 +16,8 @@ def dump_salts(path, salts):
     f.write(payload)
     f.write('\n')
 
-def fuzzy_search(salts, query):
+def fuzzy_search(salts, queries):
+  query = '.*'.join(queries)
   return [key for key in salts if re.match(query, key)]
 
 def disambiguate(xs):

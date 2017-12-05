@@ -7,7 +7,7 @@ from .common_args import (
   add_salt_file_argument,
   add_mangle_master_argument,
   add_print_argument,
-  add_query_argument,
+  add_query_arguments,
   add_confirm_argument)
 from ..saltfiles import (
   load_salts,
@@ -17,7 +17,7 @@ from ..saltfiles import (
 
 def main(args):
   salts = load_salts(args.salt_file)
-  salt = disambiguate(fuzzy_search(salts, args.query))
+  salt = disambiguate(fuzzy_search(salts, args.queries))
   print('Chosen salt: {!r}'.format(salt), file=sys.stderr)
 
   master = askpass(mangle=args.mangle_master, confirm=args.confirm)
@@ -32,7 +32,7 @@ def prepare_parser(parser):
   add_mangle_master_argument(parser)
   add_salt_file_argument(parser)
   add_print_argument(parser)
-  add_query_argument(parser)
+  add_query_arguments(parser)
   add_confirm_argument(parser)
 
   parser.set_defaults(main=main)
