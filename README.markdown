@@ -169,6 +169,7 @@ Here's the core algorithm in a variety of languages, for your copy-pasting pleas
 
     ```javascript
     // base64js comes from https://raw.githubusercontent.com/beatgammit/base64-js/master/base64js.min.js
+    const Subtle = window.crypto.subtle;
     function utf8encode(s) {return new TextEncoder('utf-8').encode(s);}
     function masterAndSaltToPassword(master, salt, postprocess=((s) => s.slice(0,16)+'Aa0+')) {
       return Subtle.importKey('raw', utf8encode(master), {name: 'PBKDF2', hash: 'SHA-256'}, false, ['deriveKey']).then((master) => {
