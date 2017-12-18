@@ -19,5 +19,5 @@ def add_query_arguments(parser):
 
 def add_confirm_argument(parser):
   parser.add_argument(
-    '--confirm', action='store_true',
+    '-c', '--confirm', action='store_true',
     help='ask for master password twice to ensure you type it right')
