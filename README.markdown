@@ -63,7 +63,7 @@ For this reason, PRPG can maintain a list of strings (called "salts", for their 
 ~ $ # set up a new salt, once
 ~ $ addsalt 'example.com:username'
 Creating new salt-file in '/home/spencer/.prpg-salts.json'
-~ $ rot13 < ~/.prpg-salts.json
+~ $ cat ~/.prpg-salts.json
 {
   "example.com:username": {}
 }
@@ -75,8 +75,6 @@ Master: ********
 Copied password for 'example.com:username' to clipboard.
 ~ $
 ```
-
-(The salt-file is ROT13-encrypted by default, as a weak protection against somebody grepping your computer for bank-related words. Yes, I _know_ that security through obscurity is frowned upon, but-- hey, it kinda works if you _stay_ obscure. Which I expect this package to do.)
 
 (Also, there's nothing special about the format `sitename.com:myusername`! The salts can be anything you want.)
 

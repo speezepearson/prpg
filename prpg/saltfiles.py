@@ -3,15 +3,14 @@ import json
 import string
 import re
 import sys
-from .rot13 import rot13
 from .core import master_and_salt_to_password
 
 def load_salts(path):
   with open(path) as f:
-    return json.loads(rot13(f.read()))
+    return json.loads(f.read())
 
 def dump_salts(path, salts):
-  payload = rot13(json.dumps(salts, sort_keys=True, indent=2))
+  payload = json.dumps(salts, sort_keys=True, indent=2)
   with open(path, 'w') as f:
     f.write(payload)
     f.write('\n')

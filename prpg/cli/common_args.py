@@ -4,7 +4,7 @@ def add_salt_file_argument(parser):
   parser.add_argument(
     '-f', '--salt-file',
     default=os.path.join(os.environ['HOME'], '.prpg-salts.json'),
-    help='ROT13ed JSON file containing information about various applications (default ~/.prpg-salts.json)')
+    help='JSON file containing information about various applications (default ~/.prpg-salts.json)')
 
 def add_mangle_master_argument(parser):
   parser.add_argument('--mangle-master', action='store_true', help='enter master password in a laborious, char-by-char-mangled way if you are worried about keyloggers')

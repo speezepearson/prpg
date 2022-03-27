@@ -13,7 +13,6 @@ from ..saltfiles import (
   disambiguate,
   fuzzy_search,
   master_and_salt_and_saltinfo_to_password)
-from ..rot13 import rot13
 
 def forever(f):
   while True:
@@ -21,9 +20,7 @@ def forever(f):
 
 def main(args):
 
-  # HYPERPARANOIA: store the master ROT13ed in case somebody
-  # snoops through our process memory or something crazy like that.
-  rot13_master = rot13(askpass(mangle=args.mangle_master))
+  master = askpass(mangle=args.mangle_master)
 
   while True:
     query = input('Query: ')
@@ -36,7 +33,7 @@ def main(args):
     else:
       print('Chosen salt: {!r}'.format(salt), file=sys.stderr)
       print_or_copy_and_notify(
-        master_and_salt_and_saltinfo_to_password(rot13(rot13_master), salt, salts[salt]),
+        master_and_salt_and_saltinfo_to_password(master, salt, salts[salt]),
         should_print=args.print,
         message='Copied password for {!r} to clipboard.'.format(salt))
 
