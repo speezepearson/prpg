@@ -3,10 +3,8 @@ from . import print_or_copy_and_notify
 from .askpass import askpass
 from .common_args import add_mangle_master_argument, add_print_argument, add_confirm_argument
 from ..saltfiles import master_and_salt_and_saltinfo_to_password
-from ..clipboard import copy_to_clipboard
 
 def main(args):
-  print_or_copy = (print if args.print else copy_to_clipboard)
   master = askpass(mangle=args.mangle_master, confirm=args.confirm)
 
   salt_info = {}
