@@ -27,16 +27,17 @@ def disambiguate(xs):
   elif len(xs) == 1:
     return xs[0]
 
-  print('Options:', file=sys.stderr)
-  for (i, x) in enumerate(xs):
-    print('  {}. {}'.format(i+1, x), file=sys.stderr)
+  options = {str(i): x for i, x in enumerate(xs, start=1)}
 
-  print('Choose an option: ', end='', file=sys.stderr)
-  while True:
-    try:
-      return xs[int(input())-1]
-    except (ValueError, IndexError):
-      print('Invalid response. Try again: ', end='', file=sys.stderr)
+  print('Options:', file=sys.stderr)
+  for i, x in options.items():
+    print('  {}: {}'.format(i, x), file=sys.stderr)
+
+  response = input('Choose an option: ')
+  while response not in options:
+    response = input('Invalid response. Try again: ')
+
+  return options[response]
 
 
 def master_and_salt_and_saltinfo_to_password(master, salt, salt_info):
