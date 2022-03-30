@@ -27,7 +27,7 @@ def main(args):
 
     salts = load_salts(args.salt_file)
     try:
-      salt = disambiguate(fuzzy_search(salts, query))
+      salt = disambiguate(fuzzy_search(salts, [query]))
     except ValueError:
       print('no matches', file=sys.stderr)
     else:
